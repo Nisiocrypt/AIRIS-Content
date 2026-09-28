@@ -25,3 +25,9 @@ Jungle Voices, Machine Drum Vibes, Workout 02 y Rising Forest los eligió el due
 
 Si una plataforma marca un reclamo de derechos, se responde con esta licencia y el link
 del tema en Mixkit.
+
+## Efectos de sonido (video 11)
+
+Efectos grabados de Mixkit, bajo la *Mixkit Sound Effects Free License* (uso comercial,
+sin atribución, no se redistribuyen los archivos). Lista con nombre e id en
+`studio/audio/kit.json`; se bajan a `assets/sfx/` con `studio/audio/fetch_music.sh`.

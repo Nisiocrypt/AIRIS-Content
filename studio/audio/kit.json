@@ -1,0 +1,13 @@
+{
+  "click": {"id": 1120, "title": "Modern click box check"},
+  "pop": {"id": 2354, "title": "Message pop alert"},
+  "confirm": {"id": 2865, "title": "Success software tone"},
+  "swoosh": {"id": 1481, "title": "Cinematic swoosh"},
+  "whoosh_deep": {"id": 1143, "title": "Cinematic whoosh deep impact"},
+  "bass_hit": {"id": 2299, "title": "Short bass hit"},
+  "drum_hit": {"id": 563, "title": "Drum deep impact"},
+  "riser_short": {"id": 792, "title": "Cinematic fast raiser"},
+  "riser": {"id": 790, "title": "Cinematic trailer riser"},
+  "logo_hit": {"id": 2900, "title": "Movie logo intro impact"},
+  "bass_switch": {"id": 2301, "title": "Quick bass switch"}
+}

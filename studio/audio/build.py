@@ -156,8 +156,9 @@ class Cues:
     def __init__(self, dur: float):
         self.bus = np.zeros((2, secs(dur) + SR))
 
-    def add(self, clip, frame: float, gain: float = 1.0, offset_s: float = 0.0):
-        place(self.bus, pitch(clip, SFX_SEMITONES), f2s(frame) + offset_s, gain)
+    def add(self, clip, frame: float, gain: float = 1.0, offset_s: float = 0.0, semitones: float | None = None):
+        st = SFX_SEMITONES if semitones is None else semitones
+        place(self.bus, pitch(clip, st), f2s(frame) + offset_s, gain)
 
 
 def hook_hit(c: Cues, gain: float = 1.0):
@@ -543,86 +544,85 @@ def v10():
 
 
 def v11():
-    """Brand film 16:9 a 24 fps: los tiempos del .tsx están en frames de 24."""
+    """Brand film 16:9 a 24 fps con efectos grabados de Mixkit (kit.json)."""
+    from kit import k
+
     src = (VIDEOS / "V11BrandFilm.tsx").read_text()
     V = consts("V11BrandFilm.tsx", "V11")
     dur = float(re.search(r"V11_DURATION = (\d+)", src).group(1)) / 24
     m = np.zeros((2, secs(dur) + SR))
     c = Cues(dur)
 
-    def at(f24: float) -> float:
-        return f24 * FPS / 24
+    def add(name, f24, gain, off=0.0, length=None):
+        c.add(k(name, length), f24 * FPS / 24, gain, offset_s=off, semitones=0)
 
-    def add(clip, f24, gain, off=0.0):
-        c.add(clip, at(f24), gain, offset_s=off)
-
-    # 01 caos: la línea, el titular, el viaje y el golpe del corte
-    add(S.tick(0.6), 0, 0.5)
-    add(S.swish(), 6, 0.3)
-    add(S.whoosh_low(), 26, 0.6)
-    for k in range(10):
-        add(S.pop(-6 + k % 5), 40 + k * 4.5, 0.22)
-    add(S.swish(), 64, 0.35)
-    add(S.impact(1.6), V["signal"], 0.8)
-    # 02 la señal: cada bloque que se conecta hace clic
+    # 01 caos
+    add("click", 0, 0.35)
+    add("swoosh", 6, 0.25)
+    add("whoosh_deep", 24, 0.5)
+    for i in range(8):
+        add("pop", 40 + i * 5, 0.18)
+    add("swoosh", 64, 0.25)
+    add("drum_hit", V["signal"], 0.7, length=1.2)
+    # 02 la señal: un clic por bloque que se conecta
     s = V["signal"]
-    for k in range(5):
-        add(S.tick(0.9), s + 10 + k * 10, 0.55)
-    add(S.swish(), s + 58, 0.35)
-    add(S.reverse_swell(0.8), s + 96, 0.5, -0.8)
-    # 03 el sistema: el mensaje entra al núcleo y cinco pasos
+    for i in range(5):
+        add("click", s + 10 + i * 10, 0.45)
+    add("swoosh", s + 58, 0.25)
+    add("riser_short", s + 96, 0.35, off=-0.86)
+    # 03 el sistema
     y = V["system"]
-    add(S.impact(1.4), y, 0.6)
-    add(S.pop(2), y + 26, 0.45)
-    add(S.whoosh(0.5), y + 40, 0.3)
-    for k in range(5):
-        add(S.tick(1.0), y + 64 + k * 8, 0.55)
-    add(S.confirm(), y + 100, 0.45)
-    add(S.swish(), y + 112, 0.4)
-    add(S.impact(1.2), y + 126, 0.6)
-    add(S.whoosh(0.7), y + 134, 0.45)
-    # 04 el motor: un clic por nodo
+    add("bass_hit", y, 0.55)
+    add("pop", y + 26, 0.4)
+    add("swoosh", y + 40, 0.22)
+    for i in range(5):
+        add("click", y + 64 + i * 8, 0.45)
+    add("confirm", y + 100, 0.3)
+    add("swoosh", y + 112, 0.25)
+    add("bass_hit", y + 126, 0.55)
+    add("whoosh_deep", y + 132, 0.45)
+    # 04 el motor: clic por nodo
     e = V["engine"]
-    for k in range(7):
-        add(S.tick(0.9), e + 14 + k * 13 + 8, 0.5)
-        add(S.pop(k % 4), e + 14 + k * 13 + 10, 0.25)
-    add(S.whoosh_low(), e + 112, 0.5)
-    add(S.swish(), e + 126, 0.35)
-    # 05 escala: el contador, el alejamiento y las líneas que se enderezan
+    for i in range(7):
+        add("click", e + 14 + i * 13 + 8, 0.4)
+    add("whoosh_deep", e + 110, 0.45)
+    add("swoosh", e + 126, 0.22)
+    # 05 escala
     sc = V["scale"]
-    add(S.tick_roll(1.8, 16), sc + 8, 0.4)
-    add(S.whoosh(0.9), sc + 54, 0.4)
-    add(S.swish(), sc + 86, 0.35)
-    add(S.swish(), sc + 110, 0.35)
-    add(S.whoosh(0.7), sc + 122, 0.45)
-    add(S.confirm(), sc + 140, 0.5)
+    for i in range(10):
+        add("click", sc + 8 + i * 4.5, 0.2)
+    add("whoosh_deep", sc + 54, 0.4)
+    add("swoosh", sc + 86, 0.22)
+    add("swoosh", sc + 110, 0.22)
+    add("bass_switch", sc + 122, 0.4)
+    add("confirm", sc + 140, 0.3)
     # 06 antes y después
     sp = V["split"]
-    add(S.impact(1.2), sp, 0.5)
-    for k in range(7):
-        add(S.tick(0.5), sp + 14 + k * 12, 0.25)
-    add(S.whoosh(1.0), sp + 40, 0.45)
-    add(S.swish(), sp + 44, 0.3)
-    add(S.swish(), sp + 72, 0.3)
+    add("bass_hit", sp, 0.45)
+    for i in range(7):
+        add("click", sp + 14 + i * 12, 0.2)
+    add("whoosh_deep", sp + 40, 0.4)
+    add("swoosh", sp + 44, 0.2)
+    add("swoosh", sp + 82, 0.2)
     # 07 el agente
     ag = V["agent"]
-    add(S.pop(0), ag + 6, 0.5)
-    for k in range(6):
-        add(S.tick(0.8), ag + 16 + k * 4, 0.3)
-    add(S.whoosh(0.5), ag + 46, 0.4)
-    add(S.pop(4), ag + 64, 0.5)
-    for k in range(3):
-        add(S.tick(0.9), ag + 76 + k * 7, 0.45)
-    add(S.swish(), ag + 104, 0.35)
-    add(S.swish(), ag + 122, 0.35)
-    add(S.whoosh_low(), ag + 136, 0.55)
+    add("pop", ag + 6, 0.45)
+    for i in range(6):
+        add("click", ag + 16 + i * 4, 0.25)
+    add("swoosh", ag + 46, 0.3)
+    add("pop", ag + 64, 0.45)
+    for i in range(3):
+        add("click", ag + 76 + i * 7, 0.35)
+    add("confirm", ag + 92, 0.3)
+    add("swoosh", ag + 102, 0.22)
+    add("swoosh", ag + 128, 0.22)
+    add("whoosh_deep", ag + 138, 0.5)
     # 08 final: todo converge en el logo
     fi = V["finale"]
-    add(S.riser(1.4), fi + 70, 0.4, -1.4)
-    add(S.impact(2.4), fi + 70, 0.9)
-    add(S.shimmer(), fi + 72, 0.4)
-    add(S.tick(0.7), fi + 112, 0.4)
-    add(S.tick(0.7), fi + 118, 0.4)
+    add("riser", fi + 70, 0.4, off=-1.8)
+    add("logo_hit", fi + 70, 0.85)
+    add("click", fi + 112, 0.3)
+    add("click", fi + 118, 0.3)
     return m, c.bus, dur, 0.5
 
 

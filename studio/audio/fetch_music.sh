@@ -14,3 +14,12 @@ EOF
   curl -sSfL -m 120 -o "assets/music/$file" "https://assets.mixkit.co/music/$id/$id.mp3"
   echo "bajado $file"
 done
+
+# Efectos de Mixkit (kit.json)
+mkdir -p assets/sfx
+python3 -c "import json; [print(v['id']) for v in json.load(open('studio/audio/kit.json')).values()]" | while read -r id; do
+  f="assets/sfx/mixkit-sfx-$id.mp3"
+  [ -s "$f" ] && continue
+  curl -sSfL -m 60 -o "$f" "https://assets.mixkit.co/active_storage/sfx/$id/$id-preview.mp3"
+  echo "bajado $f"
+done

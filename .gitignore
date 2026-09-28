@@ -9,3 +9,4 @@ __pycache__/
 
 # Música de biblioteca: se baja con studio/audio/fetch_music.sh (no se redistribuye)
 assets/music/*.mp3
+assets/sfx/*.mp3
