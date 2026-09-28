@@ -473,6 +473,80 @@ BED_LUFS = -17.0
 # Margen extra de pico real para mezclas con mucho transitorio (el AAC agrega sobrepicos).
 TP_OVERRIDE = {"v5": -3.0}
 
+# ------------------------------------------------------------------ música de biblioteca
+# tracks.json asigna a cada video un tema de assets/music/ (con su LICENSE.md al lado).
+# Si un video no figura ahí, suena la partitura sintetizada de arriba.
+TRACKS = Path(__file__).parent / "tracks.json"
+MUSIC_DIR = ROOT.parent / "assets" / "music"
+# Nivel del tema antes de sumar efectos: más alto que la cama sintetizada para que se
+# escuche como música, no como ambiente.
+TRACK_LUFS = -15.5
+# Videos cuyo arranque es distinto a propósito: la partitura propia suena hasta ese
+# momento y recién ahí entra el tema (V7: contestador gris; V9: silencio incómodo).
+ENTER = {"v7": ("V7Contestador.tsx", "V7", "cut"), "v9": ("V9Probe.tsx", "V9", "turn")}
+
+
+def ffmpeg_exe() -> str:
+    import shutil
+    try:
+        import imageio_ffmpeg
+        return imageio_ffmpeg.get_ffmpeg_exe()
+    except ImportError:
+        return shutil.which("ffmpeg") or "ffmpeg"
+
+
+def load_track(path: Path) -> np.ndarray:
+    """Decodifica cualquier formato (mp3, wav, ogg) a estéreo 48 kHz en float."""
+    import subprocess
+    raw = subprocess.run(
+        [ffmpeg_exe(), "-nostdin", "-v", "error", "-i", str(path), "-f", "f32le", "-ac", "2", "-ar", str(SR), "-"],
+        check=True, capture_output=True, stdin=subprocess.DEVNULL,
+    ).stdout
+    return np.frombuffer(raw, dtype=np.float32).reshape(-1, 2).T.astype(np.float64)
+
+
+def track_bed(cfg: dict, dur: float, enter: float) -> np.ndarray:
+    """Recorta el tema a la duración exacta; si es corto, lo repite con fundido cruzado."""
+    x = load_track(MUSIC_DIR / cfg["file"])
+    start = secs(cfg.get("start", 0.0))
+    need = secs(dur - enter)
+    seg = x[:, start:start + need].copy()
+    xf = secs(1.0)
+    while seg.shape[1] < need:
+        nxt = x[:, start:start + need - seg.shape[1] + xf]
+        ramp = np.linspace(0, 1, xf)
+        seg[:, -xf:] = seg[:, -xf:] * (1 - ramp) + nxt[:, :xf] * ramp
+        seg = np.concatenate([seg, nxt[:, xf:]], axis=1)
+    out = np.zeros((2, secs(dur)))
+    i = secs(enter)
+    out[:, i:i + need] = seg[:, :need]
+    fi = secs(cfg.get("fade_in", 0.02 if enter == 0 else 0.25))
+    out[:, i:i + fi] *= np.linspace(0, 1, fi)
+    fo = secs(cfg.get("fade_out", 1.6))
+    out[:, -fo:] *= np.linspace(1, 0, fo) ** 1.5
+    return out
+
+
+def duck(music: np.ndarray, fx: np.ndarray, depth_db: float = 5.0) -> np.ndarray:
+    """Baja el tema cuando suena un efecto (ataque 10 ms, suelta 300 ms)."""
+    blk = SR // 100
+    n = music.shape[1]
+    nb = n // blk + 1
+    pad = np.zeros(nb * blk)
+    pad[:n] = np.abs(fx[:, :n]).max(axis=0)
+    peak = pad.reshape(nb, blk).max(axis=1)
+    ref = max(peak.max(), 1e-9)
+    env = np.zeros(nb)
+    rel = np.exp(-1 / 30)
+    for k in range(nb):
+        env[k] = peak[k] / ref if peak[k] / ref > env[k - 1] * rel else env[k - 1] * rel
+    gain = db(-depth_db * np.clip(env * 2.0, 0, 1))
+    return music * np.interp(np.arange(n), np.arange(nb) * blk, gain)
+
+
+def load_tracks() -> dict:
+    return json.loads(TRACKS.read_text()) if TRACKS.exists() else {}
+
 
 def build(name: str) -> dict:
     import pyloudnorm as pyln
@@ -487,6 +561,22 @@ def build(name: str) -> dict:
     music = music - 0.3 * bandpass(music, 150, 400)
     loud = pyln.Meter(SR).integrated_loudness(music.T)
     music = music * db(BED_LUFS - loud) * (music_gain / 0.5)
+    cfg = load_tracks().get(name)
+    if cfg:
+        enter = f2s(consts(*ENTER[name][:2])[ENTER[name][2]]) if name in ENTER else 0.0
+        bed = track_bed(cfg, dur, enter)
+        live = bed[:, secs(enter):]
+        bed *= db(TRACK_LUFS + cfg.get("gain_db", 0.0) - pyln.Meter(SR).integrated_loudness(live.T))
+        if cfg.get("mute"):
+            gaps(bed, [(f2s(a), f2s(b)) for a, b in cfg["mute"]], 0.06)
+        bed = duck(bed, fx, cfg.get("duck_db", 5.0))
+        # la partitura propia queda solo en la introducción distinta (si la hay)
+        keep = np.zeros(n)
+        keep[:secs(enter)] = 1.0
+        f = secs(0.08)
+        if enter > 0:
+            keep[secs(enter) - f:secs(enter)] = np.linspace(1, 0, f)
+        music = music * keep + bed
     if post_gaps:
         gaps(music, post_gaps, 0.02)
     mix = music + fx[:, :n]

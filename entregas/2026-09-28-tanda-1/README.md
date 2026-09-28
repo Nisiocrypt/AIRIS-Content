@@ -15,6 +15,7 @@ dueños de consultorios y empresas. Todas se entienden sin sonido.
 | `07-contestador.mp4` | 15 s | Llamadas fuera de horario | Frase de contraste | Del gris al color con corte seco | Solo la web |
 | `08-titulo.mp4` | 15 s | La profesional haciendo de administrativa | Identidad y humor | Gag visual con las tareas apiladas | Consultoría gratuita de 30 minutos |
 | `09-probe.mp4` | 20 s | Plata y tiempo perdidos en un bot que no resolvió nada | Disruptivo: confesión con el nombre de la herramienta tachado | Crudo en negro, cortes secos y humor seco; después entra la marca | Hablá con un humano (por ahora) |
+| `09b-probe-logo.mp4` | 20 s | Igual que el 09 | Igual que el 09, pero se adivina "Manychat" pixelado | Igual que el 09 | Hablá con un humano (por ahora) |
 
 Guiones completos: `studio/guiones/`. Código de cada video: `studio/src/videos/`.
 
@@ -41,16 +42,21 @@ Guiones completos: `studio/guiones/`. Código de cada video: `studio/src/videos/
 
 ## Notas honestas
 
-- La música y los efectos están sintetizados por código (originales, sin licencias). Se
-  validaron con espectrograma y medición de volumen, pero **no se escucharon**: conviene
-  revisarlos con auriculares antes de publicar. Con una clave de ElevenLabs se pueden
-  reemplazar por música generada y sumar voz en off.
+- **Música**: temas de la biblioteca gratuita Mixkit (licencia libre: sirve para anuncios
+  online, sin atribución). Detalle de cada tema, autor y tramo usado en
+  `assets/music/LICENSE.md`. Los efectos siguen sintetizados por código. Elegí los temas y
+  los tramos por género, ánimo y curva de energía medida, pero **no los escuché**:
+  conviene escucharlos antes de publicar. Cambiar un tema es editar una línea de
+  `studio/audio/tracks.json` y volver a mezclar (no hace falta renderizar de nuevo).
 - **No hay voz**: el entorno no tenía clave de ElevenLabs. Los videos están pensados para
   verse sin sonido, que es como los ve la mayoría.
 - Las llamadas son de ejemplo y lo dicen en pantalla. Antes de publicar, confirmar con el
   equipo que lo que se muestra de la recepcionista de voz está implementado hoy.
 - El video 09 no nombra ni muestra ninguna marca real: el nombre está tachado a propósito
-  ("No importa cuál."). Nombrar a ManyChat chocaría con la integración que AIRIS vende en
-  la web en inglés y con la regla de las comparativas del sitio ("no ataque a terceros").
+  ("No importa cuál."). El **09b** muestra "Manychat" pixelado, a pedido. Antes de pautarlo
+  tené en cuenta que AIRIS vende una integración con ManyChat en la web en inglés, que las
+  comparativas del sitio dicen "no ataque a terceros" y que una marca puede denunciar un
+  anuncio que la muestra en forma negativa (Meta suele bajarlo). Si hay dudas, el 09 dice
+  lo mismo sin ese riesgo.
 - El dato del video 02 es el caso odontológico publicado en la web (24,4% a 2,6%, con
   denominadores) y aclara que es un caso individual, no una garantía.

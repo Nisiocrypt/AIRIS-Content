@@ -1,6 +1,7 @@
-import React from "react";
+import React, { useLayoutEffect, useRef } from "react";
 import { AbsoluteFill, interpolate, useCurrentFrame } from "remotion";
 import { EASE_OUT, FONTS } from "../brand/tokens";
+import { useFontsReady } from "../lib/useFontsReady";
 import { CLAMP, enter } from "../lib/anim";
 import { Grain, NightBackground, Vignette } from "../components/Backgrounds";
 import { Camera } from "../components/Camera";
@@ -40,15 +41,48 @@ const Snap: React.FC<{ at: number; children: React.ReactNode }> = ({ at, childre
   return <AbsoluteFill style={{ scale: String(s) }}>{children}</AbsoluteFill>;
 };
 
-/** "Probé ▇▇▇▇▇." con el nombre tachado por una barra (el chiste: no importa cuál). */
-const CensoredLine: React.FC = () => {
+/** Nombre pixelado tipo censura de TV: se dibuja chico y se agranda sin suavizar. */
+const PixelName: React.FC<{ text: string; cell: number; cols: number; rows: number }> = ({ text, cell, cols, rows }) => {
+  const ref = useRef<HTMLCanvasElement>(null);
+  const ready = useFontsReady();
+  useLayoutEffect(() => {
+    const c = ref.current;
+    if (!c || !ready) return;
+    const small = document.createElement("canvas");
+    small.width = cols;
+    small.height = rows;
+    const s = small.getContext("2d")!;
+    let fs = rows;
+    s.font = `800 ${fs}px ${FONTS.display}`;
+    fs *= (cols * 0.98) / s.measureText(text).width;
+    s.font = `800 ${fs}px ${FONTS.display}`;
+    s.fillStyle = DEADPAN;
+    s.textAlign = "center";
+    s.textBaseline = "middle";
+    s.fillText(text, cols / 2, rows / 2 + fs * 0.06);
+    const ctx = c.getContext("2d")!;
+    ctx.clearRect(0, 0, c.width, c.height);
+    ctx.imageSmoothingEnabled = false;
+    ctx.drawImage(small, 0, 0, cols, rows, 0, 0, c.width, c.height);
+  }, [ready, text, cols, rows]);
+  return <canvas ref={ref} width={cols * cell} height={rows * cell} style={{ display: "block" }} />;
+};
+
+/** "Probé ▇▇▇▇▇." con el nombre tapado (barra) o pixelado (logo censurado). */
+const CensoredLine: React.FC<{ censor: "bar" | "logo" }> = ({ censor }) => {
   const frame = useCurrentFrame();
   const bar = interpolate(frame, [V9.bar, V9.bar + 6], [0, 1], { ...CLAMP, easing: EASE_OUT });
-  const size = 124;
+  const size = censor === "logo" ? 100 : 124;
   return (
-    <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 26, fontFamily: FONTS.display, fontWeight: 800, fontSize: size, color: DEADPAN, letterSpacing: "-0.02em" }}>
+    <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: censor === "logo" ? 22 : 26, fontFamily: FONTS.display, fontWeight: 800, fontSize: size, color: DEADPAN, letterSpacing: "-0.02em" }}>
       <span>Probé</span>
-      <span style={{ display: "inline-block", width: 330, height: size * 0.74, borderRadius: 10, background: DEADPAN, scale: `${bar} 1`, transformOrigin: "left center", marginTop: size * 0.06 }} />
+      {censor === "logo" ? (
+        <span style={{ display: "inline-block", clipPath: `inset(0 ${(1 - bar) * 100}% 0 0)`, marginTop: size * 0.08 }}>
+          <PixelName text="Manychat" cell={12} cols={40} rows={9} />
+        </span>
+      ) : (
+        <span style={{ display: "inline-block", width: 330, height: size * 0.74, borderRadius: 10, background: DEADPAN, scale: `${bar} 1`, transformOrigin: "left center", marginTop: size * 0.06 }} />
+      )}
       <span style={{ marginLeft: -18 }}>.</span>
     </div>
   );
@@ -93,14 +127,14 @@ const OptionsRow: React.FC<{ start: number }> = ({ start }) => {
 
 type Shot = { from: number; to: number; node: React.ReactNode };
 
-const SHOTS: Shot[] = [
+const shots = (censor: "bar" | "logo"): Shot[] => [
   {
     from: 0,
     to: V9.promise,
     node: (
       <>
         <Center y={660}>
-          <CensoredLine />
+          <CensoredLine censor={censor} />
         </Center>
         <Center y={1090}>
           <MosaicIcon />
@@ -127,9 +161,9 @@ const SHOTS: Shot[] = [
   { from: V9.genial, to: V9.black, node: <Headline lines={["Genial."]} start={V9.genial - 14} y={900} size={150} color={DEADPAN} inDur={10} stagger={0} /> },
 ];
 
-export const V9Probe: React.FC = () => {
+export const V9Probe: React.FC<{ censor?: "bar" | "logo" }> = ({ censor = "bar" }) => {
   const frame = useCurrentFrame();
-  const shot = SHOTS.find((s) => frame >= s.from && frame < s.to);
+  const shot = shots(censor).find((s) => frame >= s.from && frame < s.to);
   const burst = interpolate(frame, [V9.turn, V9.turn + 8, V9.turn + 45], [1.8, 1.2, 0.7], { ...CLAMP, easing: EASE_OUT });
   return (
     <AbsoluteFill style={{ background: "#060607" }}>

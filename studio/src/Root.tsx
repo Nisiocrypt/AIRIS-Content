@@ -32,6 +32,8 @@ export const RemotionRoot: React.FC = () => {
       {VIDEOS.map((v) => (
         <Composition key={v.id} id={v.id} component={v.component} durationInFrames={v.duration} fps={FPS} width={WIDTH} height={HEIGHT} />
       ))}
+      {/* Variante con el logo real pixelado en vez de la barra */}
+      <Composition id="V9b-ProbeLogo" component={V9Probe} defaultProps={{ censor: "logo" as const }} durationInFrames={V9_DURATION} fps={FPS} width={WIDTH} height={HEIGHT} />
     </>
   );
 };

@@ -68,6 +68,14 @@ Contexto y reglas de marca en `docs/research/recepcionista-llamadas-ia.md`.
 - Eleven Music API (uso comercial) o librería licenciada. Pedir duración exacta al frame.
 - Arco: tensión en el gancho → entra el beat en el logo → corte a silencio antes del dato
   clave → resolución en el CTA.
+- **Una cama sintetizada suave se escucha como efectos, no como música** (lo marcó el
+  dueño). Por defecto usar un tema real de biblioteca: hoy Mixkit (anuncios online sí,
+  sin atribución, no redistribuir los mp3). Ver `docs/research/musica-libre.md`.
+- Tema por video en `studio/audio/tracks.json` (`file`, `start`, `gain_db`, `duck_db`,
+  `mute` en frames). Elegir `start` para que el tema suba en el giro de la historia; en
+  videos con arranque distinto a propósito (`ENTER` en `build.py`) el tema entra ahí.
+  Registrar origen y licencia en `assets/music/LICENSE.md`; bajar con
+  `studio/audio/fetch_music.sh`.
 
 ## Pipeline actual (sin claves de API)
 
@@ -75,7 +83,8 @@ Contexto y reglas de marca en `docs/research/recepcionista-llamadas-ia.md`.
 master), `sfx.py` (pop, whoosh, ding, confirmación, timbre propio, atención, corte,
 transferencia, alerta, golpe, riser, brillo) y `build.py` (una partitura por video que lee
 los tiempos de los `.tsx`). Reglas que salieron de la primera tanda:
-- La música se normaliza sola a -17 LUFS antes de sumar efectos; el master final va a
+- La cama sintetizada se normaliza a -17 LUFS y un tema de biblioteca a -15,5 LUFS antes
+  de sumar efectos (el tema baja 4 a 5 dB cuando suena un efecto); el master final va a
   -14 LUFS y -1 dBTP.
 - Siempre hay sonido en el frame 0 (golpe suave + aire).
 - El timbre de teléfono es un tono sostenido: va 10 dB más bajo que un pop.
