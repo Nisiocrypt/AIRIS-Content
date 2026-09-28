@@ -10,15 +10,18 @@ Licencia: https://mixkit.co/license/.
 
 | Video | Tema | Autor | Id Mixkit | Tramo usado |
 |---|---|---|---|---|
-| 01 | It's Love | Michael Ramir C. | 834 | desde 0:23 |
+| 01 | Jungle Voices | Diego Nava | 517 | desde 0:15 |
 | 02 | Infinity | Arulo | 440 | desde 0:00 |
-| 03 | Close Up | Michael Ramir C. | 1167 | desde 0:04 |
-| 04 | Better Times are Coming | Alejandro Magaña (A. M.) | 173 | desde 0:36 |
-| 05 | Techno Fest Vibes | Alejandro Magaña (A. M.) | 124 | desde 0:08 |
+| 03 | Rising Forest | Diego Nava | 471 | desde 0:32 |
+| 04 | Workout 02 | Lily J | 757 | desde 0:30 |
+| 05 | Machine Drum Vibes | Alejandro Magaña (A. M.) | 117 | desde 0:44 |
 | 06 | Moon Walk | Eugenio Mininni | 609 | desde 0:23 |
-| 07 | Digital Clouds | Alejandro Magaña (A. M.) | 175 | desde 0:30 (entra a los 3 s) |
-| 08 | Pop Track 03 | Lily J | 729 | desde 0:04 |
-| 09 y 09b | Uplifting Bass | Lily J | 726 | desde 0:13,5 (entra en el giro) |
+| 07 | Rising Forest | Diego Nava | 471 | desde 0:46 (entra a los 3 s) |
+| 08 | Workout 02 | Lily J | 757 | desde 0:38 |
+| 09 y 09b | Jungle Voices | Diego Nava | 517 | desde 0:29,5 (entra en el giro) |
+| 10 | Machine Drum Vibes | Alejandro Magaña (A. M.) | 117 | desde 0:34 (entra en la calma) |
+
+Jungle Voices, Machine Drum Vibes, Workout 02 y Rising Forest los eligió el dueño.
 
 Si una plataforma marca un reclamo de derechos, se responde con esta licencia y el link
 del tema en Mixkit.

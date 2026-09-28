@@ -88,6 +88,8 @@ los tiempos de los `.tsx`). Reglas que salieron de la primera tanda:
   -14 LUFS y -1 dBTP.
 - Siempre hay sonido en el frame 0 (golpe suave + aire).
 - El timbre de teléfono es un tono sostenido: va 10 dB más bajo que un pop.
+- Los efectos van 4 semitonos más graves y con los agudos recortados a 6,5 kHz
+  (`SFX_SEMITONES` en `build.py`): al dueño los originales le resultaban molestos.
 - Los silencios dramáticos se aplican después de la reverb, si no la cola los rellena.
 - Validar sin escuchar con `audio/inspect_mix.py` (espectrograma + envolvente) y
   `audio/overview.py`; igual conviene que una persona lo escuche antes de publicar.

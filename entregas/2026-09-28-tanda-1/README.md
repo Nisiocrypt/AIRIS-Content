@@ -43,7 +43,7 @@ Guiones completos: `studio/guiones/`. Código de cada video: `studio/src/videos/
 
 ## Notas honestas
 
-- **Música**: temas de la biblioteca gratuita Mixkit (licencia libre: sirve para anuncios
+- **Música**: temas de la biblioteca gratuita Mixkit, la mayoría elegidos por el dueño (licencia libre: sirve para anuncios
   online, sin atribución). Detalle de cada tema, autor y tramo usado en
   `assets/music/LICENSE.md`. Los efectos siguen sintetizados por código. Elegí los temas y
   los tramos por género, ánimo y curva de energía medida, pero **no los escuché**:

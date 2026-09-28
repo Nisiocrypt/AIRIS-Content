@@ -136,12 +136,28 @@ def gaps(bus, windows, fade_s=0.03):
 
 # ------------------------------------------------------------------ helpers de efectos
 
+# Los efectos se bajan de tono (pedido del dueño: los originales eran muy agudos y cansan).
+SFX_SEMITONES = -4
+
+
+def pitch(clip: np.ndarray, semitones: float) -> np.ndarray:
+    """Baja o sube el tono reproduciendo el clip más lento o más rápido (como una cinta)."""
+    if semitones == 0:
+        return clip
+    ratio = 2 ** (semitones / 12)
+    n = clip.shape[-1]
+    src = np.arange(0, n - 1, ratio)
+    if clip.ndim == 1:
+        return np.interp(src, np.arange(n), clip)
+    return np.stack([np.interp(src, np.arange(n), ch) for ch in clip])
+
+
 class Cues:
     def __init__(self, dur: float):
         self.bus = np.zeros((2, secs(dur) + SR))
 
     def add(self, clip, frame: float, gain: float = 1.0, offset_s: float = 0.0):
-        place(self.bus, clip, f2s(frame) + offset_s, gain)
+        place(self.bus, pitch(clip, SFX_SEMITONES), f2s(frame) + offset_s, gain)
 
 
 def hook_hit(c: Cues, gain: float = 1.0):
@@ -617,6 +633,8 @@ def build(name: str) -> dict:
         music = music * keep + bed
     if post_gaps:
         gaps(music, post_gaps, 0.02)
+    # agudos más suaves en los efectos
+    fx = lowpass(fx, 6500)
     mix = music + fx[:, :n]
     mix, info = master(mix, tp_db=TP_OVERRIDE.get(name, -1.2))
     # fundido final corto para no cortar colas en seco
