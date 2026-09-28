@@ -398,7 +398,7 @@ def v7():
     c.add(S.reverse_swell(1.0), V["cut"], 0.6, offset_s=-1.0)
     c.add(S.impact(2.0), V["cut"], 0.85)
     c.add(S.phone_ring(), V["ring"] + 2, 0.3)
-    c.add(S.phone_ring(0.7), V["ring"] + 38, 0.28)
+    c.add(S.phone_ring(0.45), V["ring"] + 36, 0.28)
     c.add(S.pickup(), V["pickup"], 0.85)
     c.add(S.confirm(), V["result"] + 6, 0.65)
     c.add(S.pop(5), V["notif"] + 2, 0.5)
