@@ -1,53 +1,106 @@
 ---
 name: airis-motion-graphics
-description: Sistema visual y reglas de motion de AIRIS para crear motion graphics, reels, anuncios o animaciones de marca (Remotion o HyperFrames). Usar siempre que se diseñe o anime un video, escena, lower third, stat card, mockup de chat o logo reveal para AIRIS.
+description: Cómo animar motion graphics de AIRIS a nivel corporativo experto con Remotion (o HyperFrames para prototipos) - timing, easing, cámara, transiciones propias, tipografía cinética centrada, render y QA. Usar siempre que se diseñe o anime un video, escena, stat card, mockup de chat o logo reveal para AIRIS.
 ---
 
-# AIRIS — Motion Graphics
+# AIRIS: motion graphics nivel corporativo
 
-Referencia de calidad: `docs/research/analisis-reel-airis-v1.md` y las contact sheets en
-`docs/reference/`. Todo video nuevo debe igualar o superar ese nivel.
+Antes de animar, cargar:
+- `airis-design-philosophy`: qué es la marca (tipos, colores, glass, componentes).
+- `anti-slop`: lo prohibido. **Gana sobre esta skill si hay conflicto.**
+- `remotion-best-practices`: API correcta de Remotion (instalada en `.claude/skills/`).
+
+Referencias: reel v1 en `docs/reference/` (buen nivel, pero rompe reglas de anti-slop:
+tiene etiquetas arriba de los títulos, palabras en color y títulos alineados a la
+izquierda) y el sitio en `docs/reference/web/`.
 
 ## Herramienta
 
-- **Producción**: Remotion (React). Componentes en `studio/src/components/` (crear si no
-  existe). Audio en la misma composición.
-- **Prototipo rápido**: HyperFrames (HTML + GSAP), render con `npx hyperframes render`.
-- Render final: H.264, 30 fps (60 fps si hay mucho movimiento rápido), CRF 18, yuv420p,
-  AAC 48 kHz 320 kbps.
+- **Producción**: Remotion en `studio/` (crear con la skill `remotion-best-practices` si
+  no existe). Fuentes con `@remotion/google-fonts` (Unbounded, Poppins). Motion blur con
+  `@remotion/motion-blur`. Transiciones con `@remotion/transitions` solo como base para
+  transiciones propias.
+- **Prototipo rápido**: HyperFrames (HTML + GSAP).
+- Todas las animaciones con `useCurrentFrame()` + `interpolate()` + `Easing`. Nunca CSS
+  `transition`/`animation`.
+- Render: H.264, CRF 18, yuv420p, 30 fps (60 fps si hay mucho movimiento), AAC 48 kHz.
 
-## Tokens de marca (extraídos del reel v1)
+## Principios (lo que separa lo corporativo experto de lo amateur)
 
-- Fondo: violeta casi negro `#0D0718` → `#1A0B33`, glow radial `#5B2BB5` al 35% centrado
-  arriba del foco.
-- Acento primario: gradiente lavanda `#B9A6FF → #7C5CFF`. Acento WhatsApp: `#25D366`.
-- Texto: blanco `#FFFFFF` titulares, `#C9C2DC` secundario. Eyebrows monoespaciados,
-  tracking amplio, mayúsculas, precedidos de "—".
-- Tarjetas: glass (`rgba(255,255,255,0.06)`, borde 1px `rgba(255,255,255,0.10)`, radio
-  20–28 px, sombra suave violeta).
-- Tipografía: display geométrica extra-bold (tipo Syne/Clash Display/Unbounded) para
-  titulares; itálica para la palabra-remate ("*WhatsApp no.*", "*te lo pasa.*").
+1. **Restricción.** Una idea por escena. Menos elementos, mejor ejecutados. Si una
+   animación no ayuda a entender, se saca.
+2. **Una sola familia de curvas** en todo el video:
+   - Entradas: `Easing.bezier(0.16, 1, 0.3, 1)` (expo out).
+   - Salidas: `Easing.bezier(0.7, 0, 0.84, 0)`, 30 a 40% más cortas que la entrada.
+   - Empujes sin rebote: `Easing.spring({damping: 200})`.
+   - Sin rebote ni overshoot en texto. Un overshoot mínimo (2 a 4%) solo en chips o checks.
+3. **Duraciones a 30 fps**: micro UI 8 a 12 frames; entrada de titular 16 a 24; cambio
+   de escena 12 a 18; logo reveal 36 a 54. Tiempo de lectura: palabras ÷ 3 + 0,6 s.
+4. **Stagger con propósito**: 3 a 4 frames entre líneas; por palabra solo en el titular
+   principal del hook. Nunca letra por letra.
+5. **Cámara siempre viva**: push-in continuo 100% → 104% por escena, parallax de 3 capas
+   (fondo, glass, texto) con distinta velocidad, leve desenfoque de profundidad en fondo.
+6. **Física creíble**: anticipación breve antes de movimientos grandes, follow-through en
+   elementos que frenan, overlap entre capas (no todo arranca en el mismo frame).
+7. **Movimiento que explica**: la animación cuenta el proceso (mensaje → acción →
+   resultado). Si se puede mostrar la operación en lugar de describirla, se muestra.
+8. **Sonido en cada evento importante** (skill `sound-design`), sin sonorizar todo.
 
-## Reglas de motion (no negociables)
+## Tipografía cinética (centrada, un color)
 
-1. Nunca easing lineal. Springs (`damping ~14–20, stiffness ~120–180`) o
-   `cubic-bezier(0.22, 1, 0.36, 1)` para entradas; salidas 30% más rápidas que entradas.
-2. Stagger 40–80 ms entre elementos hermanos; titulares palabra por palabra con
-   blur 12px → 0 + y 20px → 0.
-3. Cámara viva: push-in continuo 100% → 104% por escena y parallax entre capas.
-4. Un cambio visual significativo cada 1.5–2.5 s. Gancho en el primer segundo.
-5. Transiciones por *match cut* o morph de elementos compartidos; evitar fades genéricos.
-6. Datos clave (porcentajes, tiempos) con contador animado + momento de énfasis (glow
-   flash, micro-shake 2 px, partículas).
-7. Zona segura 9:16: nada importante en el 10% superior ni en el 18% inferior; textos
-   ≥ 28 px a 1080 de ancho.
-8. Acabado: grano 2–3%, viñeta suave, motion blur en desplazamientos rápidos.
-9. Cada evento visual tiene su sonido — coordinar con la skill `sound-design`.
+- Titulares Unbounded 800, centrados, un solo color, 88 a 128 px en 1080 de ancho,
+  interlineado 1.05 a 1.12, máximo 3 líneas.
+- Entrada firma: **reveal con máscara**. Cada línea sube 40 a 60 px desde detrás de una
+  máscara invisible, con opacidad 0 → 1 y blur 8 → 0 px, stagger de 3 frames.
+- Énfasis sin color: la línea en itálica entra 6 frames después con su propio golpe de
+  sonido, o la palabra clave queda sola en pantalla, más grande, en su propia escena.
+- Salida: las líneas se van hacia arriba con la máscara, más rápido que la entrada.
+- Subtítulos (si hay voz): Poppins 600, 44 a 52 px, blanco, centrados, 2 líneas máximo,
+  frase completa por bloque (no palabra por palabra, no karaoke).
 
-## Flujo
+## Movimientos firma de AIRIS (originales, reutilizables)
 
-1. Guion + beat sheet con tiempos (tabla escena/tiempo/texto/voz/SFX).
-2. Boceto de frames clave (render de stills) → validar con el usuario.
-3. Animar, renderizar, extraer contact sheet (`ffmpeg -vf fps=1,scale=270:-1,tile=5x2`)
-   y revisar uno mismo cada frame antes de entregar.
-4. Exportar 9:16, 4:5 y 16:9 si se pide distribución multiplataforma.
+Construir cada uno como componente en `studio/src/signature/`:
+
+1. **Hebras de luz**: las líneas azul → violeta → magenta del hero del sitio cruzan en
+   diagonal; se usan para abrir el video y como barrido de transición.
+2. **Lente de glass**: un panel de glass atraviesa la pantalla; lo que queda detrás del
+   panel ya es la escena siguiente (refracción con blur + saturate).
+3. **Mensaje → operación**: una burbuja de WhatsApp se transforma (shared element) en la
+   tarjeta de resultado con check ("Turno confirmado").
+4. **Línea de flujo**: un pulso de luz viaja por una línea que conecta Entrada → AIRIS →
+   Resultado; cada nodo se enciende cuando el pulso llega.
+5. **Barrido Λ**: la forma de la "A" del logo (sin barra) como máscara de transición.
+6. **Contador con peso**: los números cuentan con easing que desacelera, la barra se
+   vacía y un micro flash del glow marca el dato final.
+7. **Logo reveal**: rayos radiales suaves + el trazo del logo dibujándose + un único
+   impacto sonoro.
+
+Transiciones permitidas: las 7 de arriba, corte seco con match de forma o color, y cortes
+al ritmo de la música. Nada de fades genéricos entre todas las escenas.
+
+## Zona segura 9:16 (1080 × 1920)
+
+- Texto entre y = 190 y y = 1570 (evitar 10% superior y 18% inferior por la UI de
+  Reels/TikTok) y con 90 px de margen lateral.
+- Contenido principal centrado en el tercio medio.
+
+## Recursos gráficos
+
+- Logo y favicon oficiales en `assets/brand/`. No redibujar el logo.
+- Íconos: Lucide (licencia ISC) en trazo 1.75 px, un solo estilo en todo el video.
+- Texturas (grano, ruido, glow) generadas por código (SVG `feTurbulence`, canvas), no
+  descargadas de stock.
+- Imágenes de personas o producto solo si son reales (material del cliente o capturas
+  propias). Nada de imágenes generadas por IA de personas.
+- Para mockups de UI, reconstruirlos en código a partir de las capturas del sitio.
+
+## Flujo de trabajo
+
+1. Idea y guion con `video-ideas-hooks` (beat sheet con tiempos, texto, voz, SFX).
+2. `python3 scripts/anti_slop_check.py` sobre el guion.
+3. Stills de los frames clave (`npx remotion still`) y validación con el usuario.
+4. Animación completa + audio (`sound-design`).
+5. Render, hoja de contactos (`ffmpeg -i out.mp4 -vf fps=1,scale=270:-1,tile=5x2
+   hoja_%02d.jpg`) y revisión de cada frame con el checklist de `anti-slop`.
+6. Exportar 9:16, 4:5 y 16:9 si se pide distribución multiplataforma.

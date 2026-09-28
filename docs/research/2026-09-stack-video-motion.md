@@ -51,7 +51,7 @@ proyectos HyperFrames, así que conviven.
 - **Reap MCP / FFmpeg Micro**: servicios en la nube (clipping viral, doblaje 80+ idiomas).
   Útiles para repurposing masivo; son pagos y suben tu material a terceros.
 - **WhisperX**: transcripción con VAD + alineación wav2vec2 → timestamps por palabra.
-  Base para: subtítulos animados palabra por palabra, cortes por silencio, detección de
+  Base para: subtítulos sincronizados por frase, cortes por silencio, detección de
   muletillas y tomas repetidas (quedarse con la última).
 
 ## 3. Audio — donde más se puede mejorar
@@ -101,6 +101,34 @@ Siguientes pasos (cuando quieras pasar a producción):
 3. Cargar `ELEVENLABS_API_KEY` como secreto del entorno y conectar el MCP de ElevenLabs.
 4. Armar una librería `assets/sfx/` curada (licencias claras) para no depender 100% de
    generación.
+
+## 6. Buenas prácticas relevadas (segunda ronda)
+
+- **Hooks**: los primeros 3 a 5 segundos definen la mayor parte de la retención. En B2B
+  rinden mejor los hooks con prueba y datos en pantalla que la curiosidad vacía. Empezar
+  a mitad de la acción, primer subtítulo de 7 palabras o menos, sin disolvencias en los
+  primeros 5 s, testear 2 o 3 variantes de hook con el mismo cuerpo y medir a las 48 h.
+- **Tipografía cinética corporativa** (referencia Apple): restricción, las palabras
+  primero, movimiento que aclara el mensaje, paleta neutra con un acento estratégico.
+- **Señales de "AI slop"** a evitar: morphing, iluminación plana o que cambia entre
+  cortes, colores sobresaturados, movimiento matemáticamente perfecto sin peso, texto
+  ilegible dentro de la escena, composiciones estáticas sin cámara ni profundidad.
+- **Remotion Agent Skills oficiales** instaladas en `.claude/skills/remotion-best-practices`
+  (versión 4.0.529, trazada en `skills-lock.json`): animar con `useCurrentFrame()` +
+  `interpolate()` + `Easing.bezier/spring`, nunca con CSS transitions.
+
+Todo esto quedó aplicado en las skills `anti-slop`, `video-ideas-hooks`,
+`airis-design-philosophy` y `airis-motion-graphics`.
+
+Fuentes adicionales:
+- https://www.conbersa.ai/learn/best-youtube-shorts-hooks
+- https://almcorp.com/blog/short-form-video-mastery-tiktok-reels-youtube-shorts-2026/
+- https://www.oktopost.com/blog/b2b-short-form-video-engagement/
+- https://motiongility.com/kinetic-typography/
+- https://trydemotion.com/blog/apple-style-animation-guide
+- https://www.opus.pro/blog/ai-slop-aesthetic-12-tells
+- https://greenfroglabs.com/blog/ai-video-quality-avoid-slop-appearance
+- https://github.com/remotion-dev/skills
 
 ## Nota sobre la skill `/last30days`
 

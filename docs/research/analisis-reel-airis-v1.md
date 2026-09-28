@@ -1,4 +1,4 @@
-# Análisis del reel de referencia — AIRIS "Tu consultorio, atendido 24/7" (v1)
+# Análisis del reel de referencia: AIRIS "Tu consultorio, atendido 24/7" (v1)
 
 Archivo original: WhatsApp Video 2026-09-28 · 20.07 s · 1080×1920 (9:16) · 30 fps · H.264 +
 AAC estéreo 48 kHz. Audio: -21 dB promedio, pico -1 dB.
@@ -20,10 +20,18 @@ Contact sheets (1 frame/seg): `docs/reference/airis-reel-v1-sheet-1.jpg` y `-she
 
 - Sistema visual coherente: fondo violeta profundo con glow radial, glassmorphism, verde
   WhatsApp como único acento cálido.
-- Jerarquía tipográfica clara (display bold + palabra clave en gradiente lavanda/itálica).
+- Jerarquía tipográfica clara (display bold con segunda línea en itálica).
 - Entradas con blur-to-sharp en el texto, contadores animados, stagger en burbujas.
 - Narrativa problema → solución → prueba → confianza → CTA en 20 s. Excelente guion.
-- Eyebrow labels monoespaciados ("— AGENTE IA · WHATSAPP 24/7") dan look "producto serio".
+
+## Lo que rompe las reglas de la skill `anti-slop` (corregir en la v2)
+
+- Etiquetas arriba de cada título ("— AGENTE IA · WHATSAPP 24/7", "— CASO DOCUMENTADO",
+  "— HANDOFF HUMANO"): van afuera.
+- Guion largo en esas etiquetas: prohibido en todo texto en pantalla.
+- Palabras clave en color lavanda/degradé ("segundos.", "vos.", "ausencias.",
+  "WhatsApp no.", "24/7."): el titular entero va en un solo color.
+- Titulares alineados a la izquierda: en video todo el texto va centrado.
 
 ## Oportunidades de mejora (prioridad)
 
@@ -41,14 +49,15 @@ Contact sheets (1 frame/seg): `docs/reference/airis-reel-v1-sheet-1.jpg` y `-she
    lento continuo (100% → 104%) y parallax sutil entre capas (fondo/tarjeta/texto).
 5. **Transiciones con intención**: en vez de cortes/fades, *match cuts* (el "23:47" se
    convierte en el "10:30" del teléfono; la burbuja se expande en la tarjeta siguiente).
-6. **Momento "wow" del dato**: el 2,6% merece más — barra que se vacía con partículas,
-   un shake mínimo y flash del glow. Es la prueba social; tiene que sentirse.
+6. **Momento "wow" del dato**: el 2,6% merece más: contador que desacelera, barra que
+   se vacía, un micro flash del glow y un silencio previo. Es la prueba social; tiene
+   que sentirse.
 7. **Legibilidad móvil**: textos secundarios (timestamps, "Recordatorio 48 h enviado")
    son muy pequeños para 9:16; subir a ≥ 28 px o eliminarlos. Revisar zona segura inferior
    (el CTA "Consultoría gratuita · 30 min" queda cerca de la UI de Reels).
-8. **Subtítulos** sincronizados a la voz (palabra por palabra, estilo marca) para el 80%
-   que mira sin sonido — sin duplicar lo que ya dicen los titulares.
-9. **Textura final**: grano fino (2–3%), viñeta y un leve chromatic aberration en el
-   reveal del logo para un acabado más cinematográfico.
+8. **Subtítulos** sincronizados a la voz, por frase y en un solo color, para el 80%
+   que mira sin sonido, sin duplicar lo que ya dicen los titulares.
+9. **Textura final**: grano fino (2 a 3%) y viñeta suave para un acabado más
+   cinematográfico.
 10. **Versiones**: exportar 9:16 (Reels/TikTok), 4:5 (feed) y 16:9 (YouTube/LinkedIn)
     desde la misma composición.
