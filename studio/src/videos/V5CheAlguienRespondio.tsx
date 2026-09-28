@@ -1,6 +1,8 @@
 import React from "react";
 import { AbsoluteFill, interpolate, useCurrentFrame } from "remotion";
+import { fitText } from "@remotion/layout-utils";
 import { COLORS, EASE_OUT, FONTS } from "../brand/tokens";
+import { useFontsReady } from "../lib/useFontsReady";
 import { CLAMP } from "../lib/anim";
 import { Grain, NightBackground, VioletBackground, Vignette } from "../components/Backgrounds";
 import { Camera } from "../components/Camera";
@@ -36,14 +38,26 @@ const Punch: React.FC<{ at: number; children: React.ReactNode }> = ({ at, childr
   return <AbsoluteFill style={{ scale: String(s) }}>{children}</AbsoluteFill>;
 };
 
-/** Palabra enorme, sola en pantalla. */
-const Word: React.FC<{ text: string; italic?: boolean; size?: number }> = ({ text, italic, size = 190 }) => (
-  <AbsoluteFill style={{ justifyContent: "center", alignItems: "center" }}>
-    <div style={{ fontFamily: FONTS.display, fontWeight: 900, fontStyle: italic ? "italic" : "normal", fontSize: size, color: "#FFFFFF", letterSpacing: "-0.03em", textAlign: "center", lineHeight: 1 }}>
-      {text}
-    </div>
-  </AbsoluteFill>
-);
+/** Palabra enorme, sola en pantalla, ajustada para no pasar los 880 px de ancho seguro. */
+const Word: React.FC<{ text: string; italic?: boolean; size?: number }> = ({ text, italic, size = 190 }) => {
+  const ready = useFontsReady();
+  if (!ready) return null;
+  let fs = size;
+  for (const line of text.split("\n")) {
+    try {
+      fs = Math.min(fs, fitText({ text: line, withinWidth: italic ? 840 : 880, fontFamily: FONTS.display, fontWeight: 900, letterSpacing: "-0.03em", validateFontIsLoaded: true }).fontSize);
+    } catch {
+      // fuente todavía no disponible: queda el tamaño pedido
+    }
+  }
+  return (
+    <AbsoluteFill style={{ justifyContent: "center", alignItems: "center" }}>
+      <div style={{ fontFamily: FONTS.display, fontWeight: 900, fontStyle: italic ? "italic" : "normal", fontSize: Math.floor(fs), color: "#FFFFFF", letterSpacing: "-0.03em", textAlign: "center", lineHeight: 1.02, whiteSpace: "pre" }}>
+        {text}
+      </div>
+    </AbsoluteFill>
+  );
+};
 
 type Shot = { from: number; to: number; bg: "violet" | "night"; node: React.ReactNode };
 
@@ -66,7 +80,7 @@ const SHOTS: Shot[] = [
   { from: 105, to: 120, bg: "violet", node: <Center y={960}><div style={{ width: 900 }}><Bubble from="patient" text="¿Quién le pasó el precio?" start={91} fontSize={60} maxWidth={900} center /></div></Center> },
   { from: 120, to: 135, bg: "night", node: <Center y={960}><div style={{ width: 900 }}><Bubble from="patient" label="Cliente" text="Hola... ¿hay alguien?" start={106} fontSize={60} maxWidth={900} center /></div></Center> },
   { from: 135, to: 150, bg: "violet", node: <Word text="El cliente" size={150} /> },
-  { from: 150, to: 165, bg: "night", node: <Word text="se fue con otro." italic size={120} /> },
+  { from: 150, to: 165, bg: "night", node: <Word text={"se fue\ncon otro."} italic size={150} /> },
 ];
 
 export const V5CheAlguienRespondio: React.FC = () => {
