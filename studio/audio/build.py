@@ -470,6 +470,8 @@ BUILDERS = {"v1": v1, "v2": v2, "v3": v3, "v4": v4, "v5": v5, "v6": v6, "v7": v7
 
 
 BED_LUFS = -17.0
+# Margen extra de pico real para mezclas con mucho transitorio (el AAC agrega sobrepicos).
+TP_OVERRIDE = {"v5": -3.0}
 
 
 def build(name: str) -> dict:
@@ -488,7 +490,7 @@ def build(name: str) -> dict:
     if post_gaps:
         gaps(music, post_gaps, 0.02)
     mix = music + fx[:, :n]
-    mix, info = master(mix)
+    mix, info = master(mix, tp_db=TP_OVERRIDE.get(name, -1.2))
     # fundido final corto para no cortar colas en seco
     f = secs(0.35)
     mix[:, -f:] *= np.linspace(1, 0, f)
