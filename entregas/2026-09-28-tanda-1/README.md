@@ -1,6 +1,6 @@
-# Tanda 1: 8 videos para probar ángulos (28 de septiembre de 2026)
+# Tanda 1: 9 videos para probar ángulos (28 de septiembre de 2026)
 
-Ocho piezas verticales (1080 × 1920, 30 fps, H.264 + AAC, -14 LUFS) hechas para medir qué
+Nueve piezas verticales (1080 × 1920, 30 fps, H.264 + AAC, -14 LUFS) hechas para medir qué
 combinación de dolor, ángulo, estilo de edición y llamado a la acción funciona mejor con
 dueños de consultorios y empresas. Todas se entienden sin sonido.
 
@@ -14,6 +14,7 @@ dueños de consultorios y empresas. Todas se entienden sin sonido.
 | `06-urgencia.mp4` | 20 s | Miedo a que la IA atienda mal | La objeción como gancho | Minimalista, negro, mucho aire | Hablá con un humano (por ahora) |
 | `07-contestador.mp4` | 15 s | Llamadas fuera de horario | Frase de contraste | Del gris al color con corte seco | Solo la web |
 | `08-titulo.mp4` | 15 s | La profesional haciendo de administrativa | Identidad y humor | Gag visual con las tareas apiladas | Consultoría gratuita de 30 minutos |
+| `09-probe.mp4` | 20 s | Plata y tiempo perdidos en un bot que no resolvió nada | Disruptivo: confesión con el nombre de la herramienta tachado | Crudo en negro, cortes secos y humor seco; después entra la marca | Hablá con un humano (por ahora) |
 
 Guiones completos: `studio/guiones/`. Código de cada video: `studio/src/videos/`.
 
@@ -28,6 +29,7 @@ Guiones completos: `studio/guiones/`. Código de cada video: `studio/src/videos/
    "Hablá con un humano (por ahora)", "Escribinos por WhatsApp", solo la web).
 5. **Tema**: llamadas con IA (01, 06, 07) contra WhatsApp y agenda (02, 03, 04, 08) contra
    empresas (05).
+6. **Tono**: el disruptivo e irreverente (09) contra el resto, más institucional.
 
 ## Cómo publicarlos para que la comparación sirva
 
@@ -47,5 +49,8 @@ Guiones completos: `studio/guiones/`. Código de cada video: `studio/src/videos/
   verse sin sonido, que es como los ve la mayoría.
 - Las llamadas son de ejemplo y lo dicen en pantalla. Antes de publicar, confirmar con el
   equipo que lo que se muestra de la recepcionista de voz está implementado hoy.
+- El video 09 no nombra ni muestra ninguna marca real: el nombre está tachado a propósito
+  ("No importa cuál."). Nombrar a ManyChat chocaría con la integración que AIRIS vende en
+  la web en inglés y con la regla de las comparativas del sitio ("no ataque a terceros").
 - El dato del video 02 es el caso odontológico publicado en la web (24,4% a 2,6%, con
   denominadores) y aclara que es un caso individual, no una garantía.

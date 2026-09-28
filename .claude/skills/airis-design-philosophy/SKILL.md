@@ -28,7 +28,8 @@ Cuatro pilares. Cada pieza tiene que apoyar al menos uno:
    que queda hecha (turno confirmado, lead registrado, reclamo derivado).
 2. **Control humano.** La IA ejecuta lo repetible; las personas deciden lo sensible.
 3. **Evidencia honesta.** Datos reales con su contexto. Nunca inventar métricas,
-   testimonios ni logos de clientes.
+   testimonios ni logos de clientes. Comparamos enfoques, no atacamos a terceros: ningún
+   competidor se nombra ni se muestra.
 4. **Calma operativa.** El resultado emocional es tranquilidad: el consultorio cerró y
    todo sigue en orden.
 

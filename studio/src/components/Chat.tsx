@@ -23,6 +23,8 @@ type BubbleProps = {
   avatar?: boolean;
   /** Centra la burbuja (para planos donde el mensaje es protagonista). */
   center?: boolean;
+  /** Fuerza el lado (por defecto: AIRIS a la derecha, el resto a la izquierda). */
+  side?: "left" | "right";
 };
 
 const bubbleStyle = (from: Speaker, theme: Theme, muted: boolean): React.CSSProperties => {
@@ -79,11 +81,12 @@ export const Bubble: React.FC<BubbleProps> = ({
   muted = false,
   avatar = false,
   center = false,
+  side,
 }) => {
   const frame = useCurrentFrame();
   const p = enter(frame, start, 14);
   const q = leave(frame, exitAt, 10);
-  const right = from === "airis";
+  const right = side ? side === "right" : from === "airis";
   const st = bubbleStyle(from, theme, muted);
   const t = ink(theme);
   return (

@@ -17,7 +17,7 @@ import soundfile as sf
 sys.path.insert(0, str(Path(__file__).parent))
 import sfx as S  # noqa: E402
 from engine import (SR, adsr, bandpass, chord_pad, clap, db, hat, highpass, kick, lowpass, master,  # noqa: E402
-                    n2f, place, pluck, reverb, saw, secs, sine, stereo)
+                    n2f, noise, place, pluck, reverb, saw, secs, sine, stereo)
 
 ROOT = Path(__file__).resolve().parents[1]
 VIDEOS = ROOT / "src" / "videos"
@@ -435,7 +435,38 @@ def v8():
     return m, c.bus, dur, 0.5
 
 
-BUILDERS = {"v1": v1, "v2": v2, "v3": v3, "v4": v4, "v5": v5, "v6": v6, "v7": v7, "v8": v8}
+def v9():
+    V = consts("V9Probe.tsx", "V9")
+    dur = 20
+    turn = f2s(V["turn"])
+    m = np.zeros((2, secs(dur) + SR))
+    # Primera mitad: casi silencio, solo aire de la habitación (humor seco)
+    place(m, stereo(lowpass(noise(turn, "pink"), 300) * 0.2, 0), 0, 1.0)
+    pads(m, [
+        (turn, f2s(V["result"]), ["E3", "B3", "F#4", "G#4", "D#5"], 0.85, 2400),
+        (f2s(V["result"]), f2s(V["end"]), ["A2", "E3", "B3", "C#4", "G#4"], 0.8, 2500),
+        (f2s(V["end"]), dur, ["E2", "B2", "G#3", "D#4", "F#4"], 0.9, 2700),
+    ])
+    pulse(m, turn, f2s(V["end"]), 100, 0.22, 1.0, "sub")
+    arp(m, f2s(V["patient2"]), f2s(V["end"]), ["E4", "G#4", "B4", "D#5"], 100, 0.24, 0.65, seed=18)
+
+    c = Cues(dur)
+    for fr in [0, V["promise"], V["weeks"], V["bot1"], V["anoto"]]:
+        c.add(S.thud(), fr, 0.55)
+    c.add(S.swish(), V["bar"], 0.5)
+    c.add(S.pop(-4), V["bot1"] + 2, 0.4)
+    c.add(S.pop(-2), V["patient1"] + 2, 0.4)
+    c.add(S.hangup(), V["bot2"] + 2, 0.5)
+    c.add(S.impact(1.8), V["turn"], 0.7)
+    c.add(S.pop(0), V["patient2"] + 2, 0.5)
+    c.add(S.pop(5), V["airis"] + 2, 0.55)
+    c.add(S.confirm(), V["result"] + 6, 0.65)
+    c.add(S.swish(), V["armamos"], 0.45)
+    end_logo(c, V["end"])
+    return m, c.bus, dur, 0.55, [(f2s(V["black"]), turn - 0.01)]
+
+
+BUILDERS = {"v1": v1, "v2": v2, "v3": v3, "v4": v4, "v5": v5, "v6": v6, "v7": v7, "v8": v8, "v9": v9}
 
 
 BED_LUFS = -17.0

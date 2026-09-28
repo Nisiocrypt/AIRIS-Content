@@ -1,4 +1,4 @@
-# Tanda de prueba: 8 videos, 8 ángulos
+# Tanda de prueba: 9 videos, 9 ángulos
 
 Objetivo: probar qué combinación de dolor, ángulo, estilo de edición y llamado a la acción
 funciona mejor con dueños de consultorios y empresas. Todos en 9:16, 30 fps, pensados para
@@ -14,6 +14,7 @@ verse sin sonido (texto en pantalla) con música y efectos originales.
 | 6 | ¿Y si es una urgencia? | 20 s | Miedo a que la IA atienda mal | Objeción como gancho, control humano | Minimalista, fondo negro, mucho aire | Hablá con un humano (por ahora) |
 | 7 | El contestador no agenda turnos | 15 s | Llamadas fuera de horario | Frase de contraste | Del gris al color con corte seco | airisautomation.com |
 | 8 | Tu título no dice administrativa | 15 s | El profesional haciendo de administrativo | Identidad y humor | Gag visual: tareas que tapan el título | Consultoría gratuita de 30 minutos |
+| 9 | Probé ▇▇▇▇▇ | 20 s | Tiempo y plata perdidos en un bot que no resolvió | Disruptivo, confesión con el nombre tachado | Crudo en negro, cortes secos, humor seco; después la marca | Hablá con un humano (por ahora) |
 
 Qué comparar cuando vuelvan los números: retención a los 3 segundos (gancho), porcentaje
 visto completo (ritmo), clics o mensajes (llamado a la acción) y comentarios.

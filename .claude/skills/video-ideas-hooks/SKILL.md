@@ -66,6 +66,7 @@ Tipos de hook (con ejemplos AIRIS listos para adaptar):
 | Pregunta operativa | "¿Quién respondió al paciente del jueves?" |
 | Antes / después visual | Pantalla con 17 chats sin leer que se vacía en 3 s |
 | Humor de la casa | "Construyendo Skynet para PyMEs. Pero con permiso." |
+| Confesión disruptiva | "Probé ▇▇▇▇▇." con el nombre de la herramienta tachado: "No importa cuál." |
 
 Hooks para la recepcionista de llamadas:
 
@@ -85,6 +86,11 @@ cualquier cosa que no se pueda mostrar en pantalla. En llamadas, además: "Nunca
 pierdas una llamada", "La recepcionista que nunca duerme", "Atiende 24/7 sin cansarse"
 (son los clichés de toda la categoría; AIRIS se diferencia mostrando la operación
 terminada y la derivación a una persona).
+
+Competidores: nunca se nombran ni se muestran sus logos, ni siquiera censurados. Es la
+regla del sitio ("comparativa de enfoque, no ataque a terceros"), evita riesgo legal y
+AIRIS se integra con varias de esas herramientas (por ejemplo ManyChat en la web en
+inglés). El recurso irreverente es tachar el nombre: el espectador pone el suyo.
 
 ## 4. Estructuras de guion
 

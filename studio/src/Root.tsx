@@ -10,6 +10,7 @@ import { V5CheAlguienRespondio, V5_DURATION } from "./videos/V5CheAlguienRespond
 import { V6Urgencia, V6_DURATION } from "./videos/V6Urgencia";
 import { V7Contestador, V7_DURATION } from "./videos/V7Contestador";
 import { V8Titulo, V8_DURATION } from "./videos/V8Titulo";
+import { V9Probe, V9_DURATION } from "./videos/V9Probe";
 
 ensureFonts();
 
@@ -22,6 +23,7 @@ const VIDEOS = [
   { id: "V6-Urgencia", component: V6Urgencia, duration: V6_DURATION },
   { id: "V7-Contestador", component: V7Contestador, duration: V7_DURATION },
   { id: "V8-Titulo", component: V8Titulo, duration: V8_DURATION },
+  { id: "V9-Probe", component: V9Probe, duration: V9_DURATION },
 ];
 
 export const RemotionRoot: React.FC = () => {
