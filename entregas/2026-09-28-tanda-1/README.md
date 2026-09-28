@@ -16,7 +16,7 @@ dueños de consultorios y empresas. Todas se entienden sin sonido.
 | `08-titulo.mp4` | 15 s | La profesional haciendo de administrativa | Identidad y humor | Gag visual con las tareas apiladas | Consultoría gratuita de 30 minutos |
 | `09-probe.mp4` | 20 s | Plata y tiempo perdidos en un bot que no resolvió nada | Disruptivo: confesión con el nombre de la herramienta tachado | Crudo en negro, cortes secos y humor seco; después entra la marca | Hablá con un humano (por ahora) |
 | `09b-probe-logo.mp4` | 20 s | Igual que el 09 | Igual que el 09, pero se adivina "Manychat" pixelado | Igual que el 09 | Hablá con un humano (por ahora) |
-| `10-avalancha.mp4` | 30 s | Las mismas preguntas todo el día, en todos los chats | Avalancha que tapa la pantalla; después la calma y 20 chats resueltos a la vez | Chats con estilo WhatsApp; tiembla y corta a negro, después alejamiento de cámara hasta la grilla | Consultoría gratuita de 30 minutos |
+| `10-avalancha.mp4` | 37 s | Las mismas preguntas todo el día, en todos los chats | Avalancha que tapa la pantalla; la calma, 20 chats resueltos a la vez y cada uno ordenado en un mini CRM | Chats con estilo WhatsApp; tiembla y corta a negro; alejamiento hasta la grilla, mazo de cartas, tablero de contactos, zoom y cursor con clic | Consultoría gratuita de 30 minutos |
 
 Guiones completos: `studio/guiones/`. Código de cada video: `studio/src/videos/`.
 

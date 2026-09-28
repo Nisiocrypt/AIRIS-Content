@@ -484,7 +484,7 @@ def v9():
 
 def v10():
     V = consts("V10Avalancha.tsx", "V10")
-    dur = 30
+    dur = 1112 / FPS
     black, calm = f2s(V["black"]), f2s(V["calm"])
     m = np.zeros((2, secs(dur) + SR))
     # Avalancha: zumbido grave que sube de tensión hasta el corte a negro
@@ -514,6 +514,19 @@ def v10():
     notes = ["C6", "D6", "E6", "G6", "A6"]
     for k in range(19):
         c.add(S.ding(notes[k % 5]), V["solve"] + k * V["solveStep"] + 18 + 4, 0.2)
+    # mazo y mini CRM
+    for k in range(0, 20, 3):
+        c.add(S.swish(), V["stack"] + k * 1.2 + 14, 0.18)
+    c.add(S.whoosh(0.7), V["board"], 0.35)
+    for k in range(10):
+        c.add(S.swish(), V["deal"] + k * V["dealStep"], 0.22)
+        c.add(S.pop(-3 + (k % 4)), V["deal"] + k * V["dealStep"] + 15, 0.4)
+    c.add(S.whoosh(0.8), V["zoomIn"], 0.4)
+    for at in [V["click1"], V["click2"]]:
+        c.add(S.tick(1.0), at, 0.7)
+    c.add(S.whoosh(0.5), V["detail"], 0.25)
+    c.add(S.confirm(), V["sent"] + 2, 0.65)
+    c.add(S.whoosh(0.8), V["zoomOut"], 0.35)
     c.add(S.swish(), V["claim"], 0.45)
     end_logo(c, V["end"])
     return m, c.bus, dur, 0.55, [(black + 0.02, calm)]
@@ -637,6 +650,8 @@ def build(name: str) -> dict:
     fx = lowpass(fx, 6500)
     mix = music + fx[:, :n]
     mix, info = master(mix, tp_db=TP_OVERRIDE.get(name, -1.2))
+    # 30 ms de entrada: un golpe en el primer cuadro hace que el AAC se pase de pico
+    mix[:, :secs(0.03)] *= np.linspace(0, 1, secs(0.03))
     # fundido final corto para no cortar colas en seco
     f = secs(0.35)
     mix[:, -f:] *= np.linspace(1, 0, f)

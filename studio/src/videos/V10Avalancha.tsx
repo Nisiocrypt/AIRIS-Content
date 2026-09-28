@@ -10,7 +10,7 @@ import { EndCard } from "../components/EndCard";
 import { WA, WABubble, WAHeader, waStatus, waWallpaper } from "../components/WhatsApp";
 import { LightStrands } from "../components/LightStrands";
 
-export const V10_DURATION = 900;
+export const V10_DURATION = 1112;
 
 export const V10 = {
   flood: 0,
@@ -28,9 +28,24 @@ export const V10 = {
   gridTitle: 482,
   solve: 494,
   solveStep: 7,
-  gridOut: 700,
-  claim: 712,
-  end: 804,
+  // mazo y mini CRM
+  stack: 640,
+  board: 676,
+  deal: 700,
+  dealStep: 7,
+  zoomIn: 782,
+  zoomInEnd: 808,
+  cursorIn: 796,
+  click1: 824,
+  detail: 828,
+  click2: 858,
+  sent: 862,
+  detailOut: 884,
+  zoomOut: 888,
+  zoomOutEnd: 914,
+  boardOut: 922,
+  claim: 934,
+  end: 1016,
 };
 
 // ------------------------------------------------------------------ avalancha
@@ -172,14 +187,28 @@ const OTHERS: (Chat & { col: number; row: number; order: number })[] = (() => {
 })();
 
 /** Marco del cuadrito: aparece al alejarse la cámara y se ilumina cuando el chat se resuelve. */
-const Tile: React.FC<{ col: number; row: number; frameOpacity: number; lit: number; children: React.ReactNode }> = ({ col, row, frameOpacity, lit, children }) => {
-  const { x, y } = cellPos(col, row);
+const STACK = { x: 540, y: 1510 };
+
+const Tile: React.FC<{ col: number; row: number; frameOpacity: number; lit: number; stackIndex: number; children: React.ReactNode }> = ({ col, row, frameOpacity, lit, stackIndex, children }) => {
+  const frame = useCurrentFrame();
+  const cell = cellPos(col, row);
+  // al terminar, cada chat vuela al mazo (de a uno, muy seguido)
+  const f = interpolate(frame, [V10.stack + stackIndex * 1.2, V10.stack + stackIndex * 1.2 + 22], [0, 1], { ...CLAMP, easing: EASE_IN_OUT });
+  const x = cell.x + (STACK.x - TW / 2 - cell.x) * f;
+  const y = cell.y + (STACK.y - TH / 2 - cell.y) * f - Math.sin(Math.PI * f) * 90;
+  const rot = f * (rng(stackIndex, 11) - 0.5) * 14;
+  // las de arriba del mazo se van repartiendo al CRM
+  const dealtAt = V10.deal + (19 - stackIndex) * V10.dealStep;
+  if (stackIndex >= 10 && frame >= dealtAt) return null;
   return (
     <div
       style={{
         position: "absolute",
         left: x,
         top: y,
+        rotate: `${rot}deg`,
+        scale: String(1 - 0.12 * f),
+        zIndex: f > 0 ? 100 + stackIndex : 0,
         width: TW,
         height: TH,
         borderRadius: 22,
@@ -238,12 +267,12 @@ const ChatGrid: React.FC = () => {
   const cx = h.x + TW / 2;
   const cy = h.y + TH / 2;
   const scale = 1 + (S - 1) * z;
-  const out = leave(frame, V10.gridOut, 14);
+  const out = leave(frame, V10.boardOut, 14);
   const frameOpacity = interpolate(z, [0, 0.6], [1, 0], CLAMP);
   return (
     <AbsoluteFill style={{ opacity: out, scale: String(1 - (1 - out) * 0.04) }}>
       <AbsoluteFill style={{ transformOrigin: `${cx}px ${cy}px`, translate: `${(540 - cx) * z}px ${(960 - cy) * z}px`, scale: String(scale) }}>
-        <Tile col={HERO.col} row={HERO.row} frameOpacity={frameOpacity} lit={frameOpacity}>
+        <Tile col={HERO.col} row={HERO.row} frameOpacity={frameOpacity} lit={frameOpacity} stackIndex={19}>
           <HeroChat />
         </Tile>
         {frame >= V10.zoom
@@ -252,7 +281,7 @@ const ChatGrid: React.FC = () => {
               const tDone = tReply + 18;
               const lit = interpolate(frame, [tDone, tDone + 8], [0, 1], CLAMP);
               return (
-                <Tile key={c.name} col={c.col} row={c.row} frameOpacity={frameOpacity} lit={lit}>
+                <Tile key={c.name} col={c.col} row={c.row} frameOpacity={frameOpacity} lit={lit} stackIndex={c.order}>
                   <MiniChat chat={c} tReply={tReply} tDone={tDone} appear={frameOpacity} />
                 </Tile>
               );
@@ -260,6 +289,235 @@ const ChatGrid: React.FC = () => {
           : null}
       </AbsoluteFill>
     </AbsoluteFill>
+  );
+};
+
+// ------------------------------------------------------------------ mini CRM
+
+type Stage = 0 | 1 | 2;
+const STAGES: { label: string; tag: string; dot: string; chip: string }[] = [
+  { label: "Calificados", tag: "Calificado", dot: "#A78BFA", chip: "rgba(124,58,237,0.85)" },
+  { label: "Para contactar", tag: "Para contactar", dot: "#67E8F9", chip: "rgba(8,145,178,0.75)" },
+  { label: "Descartados", tag: "Descartado", dot: "rgba(255,255,255,0.45)", chip: "rgba(255,255,255,0.16)" },
+];
+
+/** Orden en que salen del mazo: Laura primero (es la carta de arriba). */
+const LEADS: { name: string; detail: string; stage: Stage }[] = [
+  { name: "Laura", detail: "Limpieza · jueves 11:00", stage: 0 },
+  { name: "Pablo", detail: "Obra social · llamar", stage: 1 },
+  { name: "Diego", detail: "Fuera de la zona", stage: 2 },
+  { name: "Martín", detail: "Ortodoncia · presupuesto", stage: 0 },
+  { name: "Julieta", detail: "Implante · consulta", stage: 1 },
+  { name: "Carla", detail: "Solo quería horarios", stage: 2 },
+  { name: "Valeria", detail: "Blanqueamiento", stage: 0 },
+  { name: "Tomás", detail: "Pidió precios", stage: 1 },
+  { name: "Ramiro", detail: "Número equivocado", stage: 2 },
+  { name: "Lucía", detail: "Control · viernes 9:30", stage: 0 },
+];
+
+const BOARD = { x: 56, y: 250, w: 968, h: 1060 };
+const COL_W = 294;
+const CARD_H = 118;
+const colX = (c: number) => 72 + c * 310;
+const slotY = (s: number) => 470 + s * 132;
+const slotOf = (i: number) => LEADS.slice(0, i).filter((l) => l.stage === LEADS[i].stage).length;
+const LAURA = { x: colX(0) + COL_W / 2, y: slotY(0) + CARD_H / 2 };
+const ZOOM = 2.3;
+/** Donde queda la tarjeta de Laura en pantalla con el zoom puesto. */
+const LAURA_SCREEN = { x: 540, y: 640 };
+
+const Board: React.FC = () => {
+  const frame = useCurrentFrame();
+  const p = enter(frame, V10.board, 18) * leave(frame, V10.boardOut, 14);
+  return (
+    <div style={{ position: "absolute", left: BOARD.x, top: BOARD.y, width: BOARD.w, height: BOARD.h, opacity: p, translate: `0 ${(1 - p) * 40}px`, scale: String(0.97 + 0.03 * p) }}>
+      <div style={{ position: "absolute", inset: 0, borderRadius: 44, background: "rgba(14,12,34,0.78)", border: "1.5px solid rgba(255,255,255,0.12)", boxShadow: "0 40px 90px rgba(0,0,0,0.45)" }} />
+      <div style={{ position: "absolute", left: 0, right: 0, top: 44, textAlign: "center", fontFamily: FONTS.display, fontWeight: 700, fontSize: 44, color: "#FFFFFF" }}>Contactos de hoy</div>
+      {STAGES.map((s, c) => {
+        const count = LEADS.filter((l, i) => l.stage === c && frame >= V10.deal + i * V10.dealStep + 16).length;
+        return (
+          <div key={s.label} style={{ position: "absolute", left: colX(c) - BOARD.x, top: 140, width: COL_W, display: "flex", alignItems: "center", justifyContent: "center", gap: 12 }}>
+            <div style={{ width: 16, height: 16, borderRadius: 99, background: s.dot }} />
+            <div style={{ fontFamily: FONTS.body, fontWeight: 600, fontSize: 27, color: "rgba(255,255,255,0.85)" }}>{s.label}</div>
+            <div style={{ fontFamily: FONTS.body, fontWeight: 600, fontSize: 22, color: "rgba(255,255,255,0.7)", background: "rgba(255,255,255,0.1)", borderRadius: 99, padding: "2px 12px" }}>{count}</div>
+          </div>
+        );
+      })}
+      {[0, 1].map((k) => (
+        <div key={k} style={{ position: "absolute", left: colX(k) - BOARD.x + COL_W + 7, top: 200, width: 2, height: BOARD.h - 240, background: "rgba(255,255,255,0.06)" }} />
+      ))}
+    </div>
+  );
+};
+
+const CheckIcon: React.FC<{ size: number; color?: string }> = ({ size, color = "#FFFFFF" }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24">
+    <path d="M5 12.5 L10 17 L19 7" stroke={color} strokeWidth={3} fill="none" strokeLinecap="round" strokeLinejoin="round" />
+  </svg>
+);
+
+const LeadCard: React.FC<{ i: number }> = ({ i }) => {
+  const frame = useCurrentFrame();
+  const lead = LEADS[i];
+  const t0 = V10.deal + i * V10.dealStep;
+  if (frame < t0) return null;
+  const f = interpolate(frame, [t0, t0 + 16], [0, 1], { ...CLAMP, easing: EASE_IN_OUT });
+  const tx = colX(lead.stage) + COL_W / 2;
+  const ty = slotY(slotOf(i)) + CARD_H / 2;
+  const x = STACK.x + (tx - STACK.x) * f;
+  const y = STACK.y + (ty - STACK.y) * f - Math.sin(Math.PI * f) * 160;
+  const rot = (1 - f) * (rng(i, 12) - 0.5) * 16;
+  const out = leave(frame, V10.boardOut, 14);
+  const isLaura = i === 0;
+  const sent = isLaura && frame >= V10.sent;
+  const ring = isLaura ? interpolate(frame, [V10.click1, V10.click1 + 4, V10.detailOut, V10.detailOut + 8], [0, 1, 1, 0], CLAMP) : 0;
+  const st = STAGES[lead.stage];
+  return (
+    <div
+      style={{
+        position: "absolute",
+        left: x - COL_W / 2,
+        top: y - CARD_H / 2,
+        width: COL_W,
+        height: CARD_H,
+        rotate: `${rot}deg`,
+        scale: String((0.85 + 0.15 * f) * (isLaura ? 1 - 0.04 * interpolate(frame, [V10.click1, V10.click1 + 3, V10.click1 + 8], [0, 1, 0], CLAMP) : 1)),
+        opacity: out,
+        zIndex: 300 + i,
+        borderRadius: 22,
+        background: "rgba(32,30,58,0.97)",
+        border: `1.5px solid ${ring > 0 ? `rgba(167,139,250,${0.3 + 0.7 * ring})` : "rgba(255,255,255,0.12)"}`,
+        boxShadow: `0 ${8 + 20 * Math.sin(Math.PI * f)}px ${24 + 30 * Math.sin(Math.PI * f)}px rgba(0,0,0,0.45)${ring > 0 ? `, 0 0 ${30 * ring}px rgba(124,58,237,0.6)` : ""}`,
+        padding: "16px 18px",
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "space-between",
+      }}
+    >
+      <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+        <div style={{ width: 40, height: 40, borderRadius: 99, background: "linear-gradient(160deg, #6B7C85, #3B4A54)", display: "flex", alignItems: "center", justifyContent: "center", fontFamily: FONTS.body, fontWeight: 600, fontSize: 20, color: "#FFFFFF" }}>
+          {lead.name[0]}
+        </div>
+        <div style={{ minWidth: 0 }}>
+          <div style={{ fontFamily: FONTS.body, fontWeight: 600, fontSize: 24, color: "#FFFFFF", lineHeight: 1.1 }}>{lead.name}</div>
+          <div style={{ fontFamily: FONTS.body, fontSize: 17, color: "rgba(255,255,255,0.6)", whiteSpace: "nowrap" }}>{lead.detail}</div>
+        </div>
+      </div>
+      <div style={{ alignSelf: "flex-start", display: "flex", alignItems: "center", gap: 6, fontFamily: FONTS.body, fontWeight: 600, fontSize: 16, color: "#FFFFFF", background: sent ? "rgba(124,58,237,0.95)" : st.chip, borderRadius: 99, padding: "4px 12px" }}>
+        {sent ? <CheckIcon size={16} /> : null}
+        {sent ? "Presupuesto enviado" : st.tag}
+      </div>
+    </div>
+  );
+};
+
+/** Cámara del CRM: se acerca a la tarjeta de Laura y después vuelve. */
+const CrmZoom: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const frame = useCurrentFrame();
+  const z =
+    interpolate(frame, [V10.zoomIn, V10.zoomInEnd], [0, 1], { ...CLAMP, easing: EASE_IN_OUT }) *
+    (1 - interpolate(frame, [V10.zoomOut, V10.zoomOutEnd], [0, 1], { ...CLAMP, easing: EASE_IN_OUT }));
+  return (
+    <AbsoluteFill style={{ transformOrigin: `${LAURA.x}px ${LAURA.y}px`, translate: `${(LAURA_SCREEN.x - LAURA.x) * z}px ${(LAURA_SCREEN.y - LAURA.y) * z}px`, scale: String(1 + (ZOOM - 1) * z) }}>
+      {children}
+    </AbsoluteFill>
+  );
+};
+
+/** Ficha de Laura que se abre con el clic. */
+const DetailSheet: React.FC = () => {
+  const frame = useCurrentFrame();
+  const p = enter(frame, V10.detail, 16) * leave(frame, V10.detailOut, 10);
+  if (p <= 0) return null;
+  const sent = frame >= V10.sent;
+  const press = interpolate(frame, [V10.click2, V10.click2 + 3, V10.click2 + 8], [0, 1, 0], CLAMP);
+  const row = (k: string, v: string) => (
+    <div style={{ display: "flex", justifyContent: "space-between", fontFamily: FONTS.body, fontSize: 32, padding: "14px 0", borderBottom: "1px solid rgba(255,255,255,0.08)" }}>
+      <span style={{ color: "rgba(255,255,255,0.55)" }}>{k}</span>
+      <span style={{ color: "#FFFFFF", fontWeight: 500 }}>{v}</span>
+    </div>
+  );
+  return (
+    <div style={{ position: "absolute", left: 110, top: 900, width: 860, opacity: p, translate: `0 ${(1 - p) * 70}px` }}>
+      <div style={{ borderRadius: 44, background: "rgba(22,20,44,0.96)", border: "1.5px solid rgba(255,255,255,0.14)", boxShadow: "0 40px 100px rgba(0,0,0,0.6)", padding: "40px 48px" }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 22, marginBottom: 16 }}>
+          <div style={{ width: 80, height: 80, borderRadius: 99, background: "linear-gradient(160deg, #6B7C85, #3B4A54)", display: "flex", alignItems: "center", justifyContent: "center", fontFamily: FONTS.body, fontWeight: 600, fontSize: 36, color: "#FFFFFF" }}>L</div>
+          <div style={{ flex: 1 }}>
+            <div style={{ fontFamily: FONTS.display, fontWeight: 700, fontSize: 42, color: "#FFFFFF" }}>Laura</div>
+            <div style={{ fontFamily: FONTS.body, fontSize: 26, color: "rgba(255,255,255,0.55)" }}>Llegó por WhatsApp · 21:40</div>
+          </div>
+        </div>
+        {row("Consultó por", "Limpieza dental")}
+        {row("Turno", "Jueves 11:00")}
+        {row("Estado", "Calificada")}
+        <div style={{ display: "flex", gap: 20, marginTop: 34 }}>
+          <div style={{ flex: 1, textAlign: "center", borderRadius: 999, padding: "24px 0", fontFamily: FONTS.body, fontWeight: 600, fontSize: 30, color: "rgba(255,255,255,0.85)", background: "rgba(255,255,255,0.1)" }}>Contactar</div>
+          <div
+            style={{
+              flex: 1.35,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              gap: 12,
+              borderRadius: 999,
+              padding: "24px 0",
+              fontFamily: FONTS.body,
+              fontWeight: 600,
+              fontSize: 30,
+              color: "#FFFFFF",
+              background: "linear-gradient(160deg, #8B5CF6 0%, #7C3AED 55%, #6D28D9 100%)",
+              boxShadow: "0 14px 34px rgba(76,29,149,0.45)",
+              scale: String(1 - 0.05 * press),
+            }}
+          >
+            {sent ? <CheckIcon size={32} /> : null}
+            {sent ? "Presupuesto enviado" : "Enviar presupuesto"}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+/** Cursor con clic: flecha blanca y onda en la punta. */
+const CURSOR_KEYS: [number, number, number][] = [
+  [V10.cursorIn, 1010, 1820],
+  [V10.click1 - 6, 560, 668],
+  [V10.click1 + 8, 560, 668],
+  [V10.click2 - 8, 752, 1402],
+  [V10.click2 + 10, 752, 1402],
+  [V10.detailOut + 4, 1010, 1820],
+];
+
+const Cursor: React.FC = () => {
+  const frame = useCurrentFrame();
+  if (frame < V10.cursorIn || frame > V10.detailOut + 4) return null;
+  let x = CURSOR_KEYS[0][1];
+  let y = CURSOR_KEYS[0][2];
+  for (let k = 0; k < CURSOR_KEYS.length - 1; k++) {
+    const [f0, x0, y0] = CURSOR_KEYS[k];
+    const [f1, x1, y1] = CURSOR_KEYS[k + 1];
+    if (frame >= f0 && frame <= f1) {
+      const e = interpolate(frame, [f0, f1], [0, 1], { ...CLAMP, easing: EASE_IN_OUT });
+      x = x0 + (x1 - x0) * e;
+      y = y0 + (y1 - y0) * e;
+    }
+  }
+  const o = enter(frame, V10.cursorIn, 6) * leave(frame, V10.detailOut - 4, 8);
+  const click = (at: number) => interpolate(frame, [at, at + 3, at + 8], [0, 1, 0], CLAMP);
+  const press = Math.max(click(V10.click1), click(V10.click2));
+  const ripple = (at: number) => {
+    const r = interpolate(frame, [at, at + 16], [0, 1], { ...CLAMP, easing: EASE_OUT });
+    return r > 0 && r < 1 ? <div key={at} style={{ position: "absolute", left: -60 * r, top: -60 * r, width: 120 * r, height: 120 * r, borderRadius: 999, border: `3px solid rgba(255,255,255,${0.8 * (1 - r)})` }} /> : null;
+  };
+  return (
+    <div style={{ position: "absolute", left: x, top: y, opacity: o, zIndex: 1000 }}>
+      {ripple(V10.click1)}
+      {ripple(V10.click2)}
+      <svg width={70} height={84} viewBox="0 0 20 24" style={{ position: "absolute", left: -6, top: -4, scale: String(1 - 0.15 * press), transformOrigin: "6px 4px", filter: "drop-shadow(0 6px 10px rgba(0,0,0,0.5))" }}>
+        <path d="M2 1 L2 19 L6.5 15 L9.5 22 L12.5 20.7 L9.6 14 L16 14 Z" fill="#FFFFFF" stroke="#111" strokeWidth={1.1} strokeLinejoin="round" />
+      </svg>
+    </div>
   );
 };
 
@@ -300,10 +558,17 @@ export const V10Avalancha: React.FC = () => {
             <Headline lines={["Con AIRIS,", { text: "todos tienen respuesta.", italic: true }]} start={V10.calm} exitAt={V10.ask - 14} y={900} size={110} inDur={14} />
 
             {/* Una de esas preguntas, resuelta; después la cámara se aleja: son 20 a la vez */}
-            {frame >= V10.ask - 2 && frame < V10.gridOut + 16 ? <ChatGrid /> : null}
-            <Headline lines={["Todo en simultáneo."]} start={V10.gridTitle} exitAt={V10.gridOut - 8} y={280} size={80} />
+            <CrmZoom>
+              {frame >= V10.board - 2 && frame < V10.boardOut + 16 ? <Board /> : null}
+              {frame >= V10.ask - 2 && frame < V10.boardOut + 16 ? <ChatGrid /> : null}
+              {frame >= V10.deal && frame < V10.boardOut + 16 ? LEADS.map((_, i) => <LeadCard key={i} i={i} />) : null}
+            </CrmZoom>
+            <Headline lines={["Todo en simultáneo."]} start={V10.gridTitle} exitAt={V10.stack - 4} y={280} size={80} />
+            <AbsoluteFill style={{ background: "rgba(4,3,14,0.62)", opacity: enter(frame, V10.detail, 12) * leave(frame, V10.detailOut, 10) }} />
+            <DetailSheet />
+            <Cursor />
 
-            <Headline lines={["Las mismas preguntas.", { text: "Ninguna sin respuesta.", italic: true }]} start={V10.claim} exitAt={V10.end - 14} y={900} size={96} />
+            <Headline lines={["Ninguna consulta", { text: "se pierde.", italic: true }]} start={V10.claim} exitAt={V10.end - 14} y={900} size={104} />
           </Camera>
         </>
       ) : null}
