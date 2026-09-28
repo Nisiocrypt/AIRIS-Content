@@ -466,7 +466,44 @@ def v9():
     return m, c.bus, dur, 0.55, [(f2s(V["black"]), turn - 0.01)]
 
 
-BUILDERS = {"v1": v1, "v2": v2, "v3": v3, "v4": v4, "v5": v5, "v6": v6, "v7": v7, "v8": v8, "v9": v9}
+def v10():
+    V = consts("V10Avalancha.tsx", "V10")
+    dur = 30
+    black, calm = f2s(V["black"]), f2s(V["calm"])
+    m = np.zeros((2, secs(dur) + SR))
+    # Avalancha: zumbido grave que sube de tensión hasta el corte a negro
+    drone(m, 0, black, ["D2", "A2", "D#3"], 0.55, 420)
+    place(m, stereo(bandpass(noise(black, "pink"), 300, 2500) * np.linspace(0, 1, secs(black)) ** 2 * 0.5, 0), 0, 1.0)
+
+    c = Cues(dur)
+    c.add(S.pop(0), 0, 0.8)
+    rng = np.random.default_rng(10)
+    n = 175
+    for i in range(1, n):
+        fr = round(V["peak"] * (i / n) ** 0.62)
+        c.add(S.pop(int(rng.integers(-6, 9))), fr, 0.34 * (1 - 0.45 * i / n))
+    # vibración del teléfono, cada vez más seguida
+    for fr in [20, 52, 78, 100, 118, 134, 146, 156, 165, 172, 178]:
+        buzz = saw(165, 0.28) * adsr(secs(0.28), 0.01, 0.05, 0.9, 0.05) * (0.6 + 0.4 * np.sign(sine(28, 0.28)))
+        c.add(stereo(lowpass(buzz, 500), 0), fr, 0.35)
+    c.add(S.riser(1.8), V["peak"], 0.5, offset_s=-1.8)
+    c.add(S.impact(2.0), V["calm"], 0.8)
+    c.add(S.shimmer(), V["calm"] + 2, 0.35)
+    c.add(S.pop(0), V["ask"] + 2, 0.5)
+    c.add(S.pop(4), V["reply"] + 2, 0.55)
+    c.add(S.pop(-2), V["ok"] + 2, 0.45)
+    c.add(S.confirm(), V["booked"] + 6, 0.6)
+    c.add(S.whoosh(0.9), V["zoom"] - 4, 0.45)
+    c.add(S.swish(), V["gridTitle"], 0.35)
+    notes = ["C6", "D6", "E6", "G6", "A6"]
+    for k in range(19):
+        c.add(S.ding(notes[k % 5]), V["solve"] + k * V["solveStep"] + 18 + 4, 0.2)
+    c.add(S.swish(), V["claim"], 0.45)
+    end_logo(c, V["end"])
+    return m, c.bus, dur, 0.55, [(black + 0.02, calm)]
+
+
+BUILDERS = {"v1": v1, "v2": v2, "v3": v3, "v4": v4, "v5": v5, "v6": v6, "v7": v7, "v8": v8, "v9": v9, "v10": v10}
 
 
 BED_LUFS = -17.0
@@ -483,7 +520,8 @@ MUSIC_DIR = ROOT.parent / "assets" / "music"
 TRACK_LUFS = -15.5
 # Videos cuyo arranque es distinto a propósito: la partitura propia suena hasta ese
 # momento y recién ahí entra el tema (V7: contestador gris; V9: silencio incómodo).
-ENTER = {"v7": ("V7Contestador.tsx", "V7", "cut"), "v9": ("V9Probe.tsx", "V9", "turn")}
+ENTER = {"v7": ("V7Contestador.tsx", "V7", "cut"), "v9": ("V9Probe.tsx", "V9", "turn"),
+         "v10": ("V10Avalancha.tsx", "V10", "calm")}
 
 
 def ffmpeg_exe() -> str:

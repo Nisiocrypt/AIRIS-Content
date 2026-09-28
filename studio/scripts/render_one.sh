@@ -4,7 +4,7 @@ set -euo pipefail
 cd "$(dirname "$0")/.."
 FF=${FFMPEG:-/usr/local/lib/python3.11/dist-packages/imageio_ffmpeg/binaries/ffmpeg-linux-x86_64-v7.0.2}
 id=$1; slug=$2; audio=$3
-OUT=../output/renders; DEL=../entregas/2026-09-28-tanda-1; QA=../output/qa
+OUT=../output/renders; DEL=${DEL:-../entregas/2026-09-28-tanda-1}; QA=../output/qa
 mkdir -p "$OUT" "$DEL" "$QA"
 python3 audio/build.py "$audio"
 npx remotion render "$id" "$OUT/$slug-silent.mp4" --muted --concurrency=4 --log=error < /dev/null

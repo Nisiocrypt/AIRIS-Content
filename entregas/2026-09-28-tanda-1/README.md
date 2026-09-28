@@ -1,6 +1,6 @@
-# Tanda 1: 9 videos para probar ángulos (28 de septiembre de 2026)
+# Tanda 1: 10 videos para probar ángulos (28 de septiembre de 2026)
 
-Nueve piezas verticales (1080 × 1920, 30 fps, H.264 + AAC, -14 LUFS) hechas para medir qué
+Diez piezas verticales (1080 × 1920, 30 fps, H.264 + AAC, -14 LUFS) hechas para medir qué
 combinación de dolor, ángulo, estilo de edición y llamado a la acción funciona mejor con
 dueños de consultorios y empresas. Todas se entienden sin sonido.
 
@@ -16,6 +16,7 @@ dueños de consultorios y empresas. Todas se entienden sin sonido.
 | `08-titulo.mp4` | 15 s | La profesional haciendo de administrativa | Identidad y humor | Gag visual con las tareas apiladas | Consultoría gratuita de 30 minutos |
 | `09-probe.mp4` | 20 s | Plata y tiempo perdidos en un bot que no resolvió nada | Disruptivo: confesión con el nombre de la herramienta tachado | Crudo en negro, cortes secos y humor seco; después entra la marca | Hablá con un humano (por ahora) |
 | `09b-probe-logo.mp4` | 20 s | Igual que el 09 | Igual que el 09, pero se adivina "Manychat" pixelado | Igual que el 09 | Hablá con un humano (por ahora) |
+| `10-avalancha.mp4` | 30 s | Las mismas preguntas todo el día, en todos los chats | Avalancha que tapa la pantalla; después la calma y 20 chats resueltos a la vez | Chats con estilo WhatsApp; tiembla y corta a negro, después alejamiento de cámara hasta la grilla | Consultoría gratuita de 30 minutos |
 
 Guiones completos: `studio/guiones/`. Código de cada video: `studio/src/videos/`.
 
