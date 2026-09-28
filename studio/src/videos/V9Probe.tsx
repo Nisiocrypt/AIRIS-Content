@@ -149,7 +149,7 @@ export const V9Probe: React.FC = () => {
             <LightStrands opacity={interpolate(frame, [V9.turn, V9.turn + 6, V9.patient2, V9.end], [1, 0.9, 0.35, 0.3], CLAMP)} energy={burst} centerY={0.76} spread={320} speed={1.2} />
           </Camera>
           <Camera dur={V9_DURATION - V9.turn} start={V9.turn} from={1} to={1.04} sway={5} seed="v9fg">
-            <Headline lines={["No necesitabas", { text: "otro bot.", italic: true }]} start={V9.turn} exitAt={V9.patient2 - 10} y={900} size={110} inDur={12} />
+            <Headline lines={["No necesitabas", { text: "otro bot.", italic: true }]} start={V9.turn} exitAt={V9.patient2 - 16} y={900} size={110} inDur={12} />
             <Center y={780} style={{ gap: 26, width: 900, left: 90 }}>
               <Bubble from="patient" label="Paciente" text="Quiero mover mi turno." start={V9.patient2} exitAt={V9.armamos - 10} fontSize={40} />
               <Bubble from="airis" label="AIRIS" text="Listo, te pasé al viernes 10:30." start={V9.airis} exitAt={V9.armamos - 10} fontSize={40} />
@@ -157,7 +157,7 @@ export const V9Probe: React.FC = () => {
             <Center y={1220}>
               <ResultCard title="Turno reprogramado" subtitle="Viernes 10:30" start={V9.result} exitAt={V9.armamos - 10} />
             </Center>
-            <Headline lines={["Lo armamos", { text: "y lo mantenemos nosotros.", italic: true }]} start={V9.armamos} exitAt={V9.end - 8} y={900} size={96} />
+            <Headline lines={["Lo armamos", { text: "y lo mantenemos nosotros.", italic: true }]} start={V9.armamos} exitAt={V9.end - 14} y={900} size={96} />
           </Camera>
         </>
       ) : null}

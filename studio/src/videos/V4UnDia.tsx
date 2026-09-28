@@ -197,7 +197,7 @@ export const V4UnDia: React.FC = () => {
         <Headline
           lines={["Vos atendiste", "pacientes.", { text: "AIRIS, todo lo demás.", italic: true }]}
           start={V4.claim}
-          exitAt={V4.end - 8}
+          exitAt={V4.end - 14}
           y={920}
           size={100}
         />

@@ -128,14 +128,14 @@ export const V3ContestarNoEsResolver: React.FC = () => {
         <Headline lines={["Contestar", { text: "no es resolver.", italic: true }]} start={V3.claim} exitAt={V3.done - 10} y={900} size={116} />
 
         {/* Lo que quedó hecho */}
-        <Headline lines={["Lo que quedó hecho:"]} start={V3.done} exitAt={V3.nobody - 12} y={560} size={80} />
+        <Headline lines={["Lo que quedó hecho:"]} start={V3.done + 4} exitAt={V3.nobody - 12} y={560} size={80} />
         <Center y={980} style={{ gap: 30 }}>
           <ActionChip text="Turno movido al viernes 10:30" start={V3.row1} exitAt={V3.nobody - 12} size={38} />
           <ActionChip text="Agenda actualizada" start={V3.row2} exitAt={V3.nobody - 12} size={38} />
           <ActionChip text="Recordatorio programado" start={V3.row3} exitAt={V3.nobody - 12} size={38} />
         </Center>
 
-        <Headline lines={["Sin que nadie", { text: "levante el teléfono.", italic: true }]} start={V3.nobody} exitAt={V3.end - 8} y={900} size={100} />
+        <Headline lines={["Sin que nadie", { text: "levante el teléfono.", italic: true }]} start={V3.nobody} exitAt={V3.end - 14} y={900} size={100} />
       </Camera>
 
       <AbsoluteFill>

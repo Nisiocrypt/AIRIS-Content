@@ -105,7 +105,7 @@ export const V5CheAlguienRespondio: React.FC = () => {
               <ActionChip text="Seguimiento en 24 h" start={V5.chip3} exitAt={V5.calmOut} size={34} />
             </Center>
             <Headline lines={["Nada queda", { text: "sin respuesta.", italic: true }]} start={V5.nada} exitAt={V5.vos - 10} y={900} size={116} />
-            <Headline lines={["Y vos sabés", { text: "quién respondió.", italic: true }]} start={V5.vos} exitAt={V5.end - 8} y={900} size={104} />
+            <Headline lines={["Y vos sabés", { text: "quién respondió.", italic: true }]} start={V5.vos} exitAt={V5.end - 14} y={900} size={104} />
           </Camera>
         </>
       ) : null}

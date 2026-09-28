@@ -113,7 +113,7 @@ export const V8Titulo: React.FC = () => {
           </Center>
         ) : null}
         <Headline lines={["Eso lo hace AIRIS."]} start={V8.claim} exitAt={V8.vos - 8} y={1450} size={80} />
-        <Headline lines={["Vos, lo que", { text: "estudiaste.", italic: true }]} start={V8.vos} exitAt={V8.end - 8} y={1450} size={88} />
+        <Headline lines={["Vos, lo que", { text: "estudiaste.", italic: true }]} start={V8.vos} exitAt={V8.end - 14} y={1450} size={88} />
       </Camera>
       <AbsoluteFill>
         {frame >= V8.end - 2 ? <EndCard theme="dark" start={V8.end} cta="Consultoría gratuita de 30 minutos" logoY={760} /> : null}

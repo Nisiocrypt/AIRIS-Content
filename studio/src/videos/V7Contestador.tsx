@@ -57,10 +57,10 @@ export const V7Contestador: React.FC = () => {
               ) : null}
             </Center>
             <Center y={880}>
-              <ResultCard title="Turno reservado" subtitle="Lunes 9:00" start={V7.result} exitAt={V7.end - 8} />
+              <ResultCard title="Turno reservado" subtitle="Lunes 9:00" start={V7.result} exitAt={V7.end - 14} />
             </Center>
             <Center y={1240}>
-              <Notification title="Consultorio" text="Tu turno quedó para el lunes 9:00." start={V7.notif} exitAt={V7.end - 8} />
+              <Notification title="Consultorio" text="Tu turno quedó para el lunes 9:00." start={V7.notif} exitAt={V7.end - 14} />
             </Center>
           </Camera>
         </>

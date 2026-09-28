@@ -64,7 +64,7 @@ export const V6Urgencia: React.FC = () => {
           <PersonCard name="Sofía" role="Recepción" lines={["Dolor fuerte e hinchazón", "Desde anoche", "Prioridad alta"]} start={V6.person} exitAt={V6.claim - 12} />
         </Center>
 
-        <Headline lines={["No diagnostica.", { text: "Te pasa la llamada.", italic: true }]} start={V6.claim} exitAt={V6.end - 8} y={900} size={100} />
+        <Headline lines={["No diagnostica.", { text: "Te pasa la llamada.", italic: true }]} start={V6.claim} exitAt={V6.end - 14} y={900} size={100} />
       </Camera>
       <AbsoluteFill>
         {frame >= V6.end - 2 ? (

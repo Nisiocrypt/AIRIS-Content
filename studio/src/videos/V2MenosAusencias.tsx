@@ -153,7 +153,7 @@ export const V2MenosAusencias: React.FC = () => {
         <Headline lines={["Cada ausencia", { text: "es un sillón vacío.", italic: true }]} start={V2.empties + 4} exitAt={V2.what - 8} y={1300} size={88} color={COLORS.ink} />
 
         {/* Qué cambió */}
-        <Headline lines={["AIRIS empezó a", { text: "confirmar cada turno.", italic: true }]} start={V2.what} exitAt={V2.pause - 12} y={640} size={92} color={COLORS.ink} />
+        <Headline lines={["AIRIS empezó a", { text: "confirmar cada turno.", italic: true }]} start={V2.what + 6} exitAt={V2.pause - 12} y={640} size={92} color={COLORS.ink} />
         <Center y={1110} style={{ gap: 30 }}>
           <ActionChip text="Recordatorio 48 h antes" start={V2.chip1} exitAt={V2.pause - 12} theme="light" size={40} tone="info" />
           <ActionChip text="Confirmación por WhatsApp" start={V2.chip2} exitAt={V2.pause - 12} theme="light" size={40} tone="info" />
@@ -161,7 +161,7 @@ export const V2MenosAusencias: React.FC = () => {
         </Center>
 
         {/* Respiro */}
-        <Headline lines={["Con AIRIS:"]} start={V2.pause} exitAt={V2.stat - 4} y={900} size={110} color={COLORS.ink} />
+        <Headline lines={["Con AIRIS:"]} start={V2.pause} exitAt={V2.stat - 12} y={900} size={110} color={COLORS.ink} />
 
         {/* Dato */}
         <Center y={860}>
@@ -171,7 +171,7 @@ export const V2MenosAusencias: React.FC = () => {
         {frame >= V2.stat && frame < V2.measure ? <Footnote text="Caso individual documentado. No es una garantía." start={V2.stat + 20} color={COLORS.ink} /> : null}
 
         {/* Cierre de idea */}
-        <Headline lines={["Medir antes.", { text: "Automatizar después.", italic: true }]} start={V2.measure} exitAt={V2.end - 8} y={900} size={100} color={COLORS.ink} />
+        <Headline lines={["Medir antes.", { text: "Automatizar después.", italic: true }]} start={V2.measure + 6} exitAt={V2.end - 14} y={900} size={100} color={COLORS.ink} />
       </Camera>
 
       <AbsoluteFill>
