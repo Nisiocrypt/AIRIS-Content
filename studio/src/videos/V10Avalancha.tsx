@@ -4,13 +4,14 @@ import { COLORS, EASE_IN, EASE_IN_OUT, EASE_OUT, FONTS } from "../brand/tokens";
 import { CLAMP, enter, leave } from "../lib/anim";
 import { Grain, NightBackground, Vignette } from "../components/Backgrounds";
 import { Camera } from "../components/Camera";
-import { Headline } from "../components/Text";
+import { Footnote, Headline } from "../components/Text";
 import { ActionChip, ResultCard } from "../components/Cards";
 import { EndCard } from "../components/EndCard";
-import { WA, WABubble, WAHeader, waStatus, waWallpaper } from "../components/WhatsApp";
+import { LambdaAvatar } from "../components/Logo";
+import { Ticks, WA, WABubble, WAHeader, waStatus, waWallpaper } from "../components/WhatsApp";
 import { LightStrands } from "../components/LightStrands";
 
-export const V10_DURATION = 1112;
+export const V10_DURATION = 1382;
 
 export const V10 = {
   flood: 0,
@@ -44,8 +45,20 @@ export const V10 = {
   zoomOut: 888,
   zoomOutEnd: 914,
   boardOut: 922,
-  claim: 934,
-  end: 1016,
+  // asistente personal del dueño
+  assist: 930,
+  rec: 948,
+  voice: 996,
+  transcript: 1004,
+  aTyping: 1016,
+  aReply: 1036,
+  pdf: 1050,
+  ask2: 1080,
+  sTyping: 1090,
+  summary: 1104,
+  assistOut: 1196,
+  claim: 1208,
+  end: 1286,
 };
 
 // ------------------------------------------------------------------ avalancha
@@ -521,6 +534,156 @@ const Cursor: React.FC = () => {
   );
 };
 
+// ------------------------------------------------------------------ asistente personal
+
+const PANEL = { x: 90, y: 330, w: 900, h: 1250 };
+
+/** Nota de voz enviada, con la transcripción debajo (como la muestra WhatsApp). */
+const VoiceNote: React.FC = () => {
+  const frame = useCurrentFrame();
+  const p = enter(frame, V10.voice, 12);
+  const tr = enter(frame, V10.transcript, 14);
+  const played = interpolate(frame, [V10.voice + 4, V10.voice + 70], [0, 1], CLAMP);
+  const bars = Array.from({ length: 34 }, (_, i) => 10 + 34 * Math.abs(Math.sin(i * 1.7) * Math.cos(i * 0.6)));
+  return (
+    <div style={{ display: "flex", justifyContent: "flex-end", opacity: p, translate: `0 ${(1 - p) * 20}px` }}>
+      <div style={{ width: 640, background: WA.outgoing, borderRadius: 14, borderTopRightRadius: 0, padding: "18px 20px 12px", boxShadow: "0 2px 3px rgba(0,0,0,0.25)" }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 18 }}>
+          <svg width={40} height={40} viewBox="0 0 24 24">
+            <path d="M7 4 L20 12 L7 20 Z" fill={WA.text} opacity={0.85} />
+          </svg>
+          <div style={{ flex: 1, display: "flex", alignItems: "center", gap: 4, height: 50 }}>
+            {bars.map((h, i) => (
+              <div key={i} style={{ width: 8, height: h, borderRadius: 4, background: i / bars.length < played ? WA.tick : "rgba(233,237,239,0.45)" }} />
+            ))}
+          </div>
+          <div style={{ width: 70, height: 70, borderRadius: 99, background: "linear-gradient(160deg, #6B7C85, #3B4A54)", display: "flex", alignItems: "center", justifyContent: "center", fontFamily: FONTS.body, fontWeight: 600, fontSize: 30, color: "#FFFFFF" }}>
+            M
+          </div>
+        </div>
+        <div style={{ display: "flex", justifyContent: "space-between", fontFamily: FONTS.body, fontSize: 20, color: WA.meta, marginTop: 4, paddingLeft: 58 }}>
+          <span>0:04</span>
+          <span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>
+            10:12 <Ticks size={20} />
+          </span>
+        </div>
+        <div style={{ overflow: "hidden", maxHeight: 130 * tr, opacity: tr, marginTop: 10 * tr, borderTop: `1px solid rgba(233,237,239,${0.18 * tr})`, paddingTop: 10 * tr }}>
+          <div style={{ fontFamily: FONTS.body, fontSize: 32, color: WA.text, lineHeight: 1.3 }}>"Enviale un presupuesto a Julieta por el implante."</div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+/** Documento adjunto que manda el asistente. */
+const PdfBubble: React.FC = () => {
+  const frame = useCurrentFrame();
+  const p = enter(frame, V10.pdf, 12);
+  return (
+    <div style={{ display: "flex", justifyContent: "flex-start", opacity: p, translate: `0 ${(1 - p) * 20}px` }}>
+      <div style={{ width: 600, background: WA.incoming, borderRadius: 14, borderTopLeftRadius: 0, padding: 14, boxShadow: "0 2px 3px rgba(0,0,0,0.25)" }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 18, background: "rgba(0,0,0,0.2)", borderRadius: 10, padding: "16px 18px" }}>
+          <div style={{ width: 56, height: 68, borderRadius: 8, background: "#E5484D", display: "flex", alignItems: "flex-end", justifyContent: "center", paddingBottom: 8, fontFamily: FONTS.body, fontWeight: 700, fontSize: 16, color: "#FFFFFF" }}>PDF</div>
+          <div>
+            <div style={{ fontFamily: FONTS.body, fontSize: 30, color: WA.text }}>Presupuesto Julieta.pdf</div>
+            <div style={{ fontFamily: FONTS.body, fontSize: 22, color: WA.meta }}>1 página · PDF</div>
+          </div>
+        </div>
+        <div style={{ textAlign: "right", fontFamily: FONTS.body, fontSize: 20, color: WA.meta, marginTop: 6 }}>10:12</div>
+      </div>
+    </div>
+  );
+};
+
+const SUMMARY: [string, string][] = [
+  ["Consultas respondidas", "214"],
+  ["Llamadas atendidas", "37"],
+  ["Contactos calientes", "38"],
+  ["Contactos fríos", "61"],
+  ["Para atender vos", "4"],
+  ["Esperan presupuesto", "9"],
+  ["Esperan receta", "3"],
+];
+
+/** Resumen de la semana que manda el asistente. */
+const SummaryBubble: React.FC = () => {
+  const frame = useCurrentFrame();
+  const p = enter(frame, V10.summary, 12);
+  return (
+    <div style={{ display: "flex", justifyContent: "flex-start", opacity: p, translate: `0 ${(1 - p) * 20}px` }}>
+      <div style={{ width: 720, background: WA.incoming, borderRadius: 14, borderTopLeftRadius: 0, padding: "22px 28px 12px", boxShadow: "0 2px 3px rgba(0,0,0,0.25)", fontFamily: FONTS.body, color: WA.text }}>
+        <div style={{ fontWeight: 700, fontSize: 36, marginBottom: 12 }}>Resumen de la semana</div>
+        {SUMMARY.map(([k, v], i) => {
+          const r = enter(frame, V10.summary + 8 + i * 6, 10);
+          return (
+            <div key={k} style={{ display: "flex", justifyContent: "space-between", fontSize: 32, padding: "7px 0", opacity: r, translate: `${(1 - r) * -16}px 0` }}>
+              <span style={{ color: "rgba(233,237,239,0.8)" }}>{k}</span>
+              <span style={{ fontWeight: 700 }}>{v}</span>
+            </div>
+          );
+        })}
+        <div style={{ fontSize: 30, marginTop: 14, lineHeight: 1.3, opacity: enter(frame, V10.summary + 56, 12) }}>¿Te paso los 4 que necesitan que los atiendas vos?</div>
+        <div style={{ textAlign: "right", fontSize: 20, color: WA.meta, marginTop: 4 }}>18:00</div>
+      </div>
+    </div>
+  );
+};
+
+/** Barra de escribir: primero "Mensaje", después grabando audio. */
+const InputBar: React.FC = () => {
+  const frame = useCurrentFrame();
+  const recording = frame >= V10.rec && frame < V10.voice;
+  const secsRec = Math.min(4, Math.floor((frame - V10.rec) / 12));
+  const pulse = 1 + 0.08 * Math.sin(frame * 0.5);
+  return (
+    <div style={{ position: "absolute", left: 0, right: 0, bottom: 0, height: 130, background: WA.wallpaper, display: "flex", alignItems: "center", gap: 16, padding: "0 20px" }}>
+      <div style={{ flex: 1, height: 88, borderRadius: 99, background: WA.header, display: "flex", alignItems: "center", gap: 16, padding: "0 30px", fontFamily: FONTS.body, fontSize: 30, color: WA.meta }}>
+        {recording ? (
+          <>
+            <div style={{ width: 22, height: 22, borderRadius: 99, background: "#F15C6D", opacity: 0.5 + 0.5 * Math.abs(Math.sin(frame * 0.25)) }} />
+            <span style={{ color: WA.text }}>0:0{Math.max(0, secsRec)}</span>
+            <span style={{ marginLeft: "auto" }}>‹ Deslizá para cancelar</span>
+          </>
+        ) : (
+          <span>Mensaje</span>
+        )}
+      </div>
+      <div style={{ width: 88, height: 88, borderRadius: 99, background: "#00A884", display: "flex", alignItems: "center", justifyContent: "center", scale: String(recording ? 1.35 * pulse : 1) }}>
+        <svg width={40} height={40} viewBox="0 0 24 24">
+          <rect x="9" y="3" width="6" height="12" rx="3" fill="#0B141A" />
+          <path d="M5.5 11 A6.5 6.5 0 0 0 18.5 11 M12 17.5 L12 21" stroke="#0B141A" strokeWidth={2} fill="none" strokeLinecap="round" />
+        </svg>
+      </div>
+    </div>
+  );
+};
+
+const AssistantChat: React.FC = () => {
+  const frame = useCurrentFrame();
+  const p = enter(frame, V10.assist, 18) * leave(frame, V10.assistOut, 12);
+  const status = frame >= V10.aTyping && frame < V10.aReply ? "escribiendo…" : frame >= V10.sTyping && frame < V10.summary ? "escribiendo…" : "en línea";
+  const scroll = interpolate(frame, [V10.ask2 - 2, V10.ask2 + 12], [0, 0], { ...CLAMP, easing: EASE_OUT }) + interpolate(frame, [V10.summary - 2, V10.summary + 16], [0, 580], { ...CLAMP, easing: EASE_OUT });
+  return (
+    <div style={{ position: "absolute", left: PANEL.x, top: PANEL.y, width: PANEL.w, height: PANEL.h, opacity: p, translate: `0 ${(1 - p) * 60}px`, scale: String(0.96 + 0.04 * p) }}>
+      <div style={{ position: "absolute", inset: 0, borderRadius: 48, overflow: "hidden", ...waWallpaper, boxShadow: "0 40px 100px rgba(0,0,0,0.55)", border: "1.5px solid rgba(255,255,255,0.1)" }}>
+        <div style={{ position: "absolute", left: 0, right: 0, top: 130, bottom: 130, overflow: "hidden" }}>
+          <div style={{ padding: "30px 36px", display: "flex", flexDirection: "column", gap: 20, translate: `0 ${-scroll}px` }}>
+            <VoiceNote />
+            <WABubble text="Listo, presupuesto enviado a Julieta. Te aviso cuando lo abra." time="10:12" start={V10.aReply} fontSize={34} />
+            <PdfBubble />
+            <WABubble text="¿Cómo viene la semana?" time="18:00" out start={V10.ask2} fontSize={34} />
+            <SummaryBubble />
+          </div>
+        </div>
+        <div style={{ position: "absolute", left: 0, right: 0, top: 0 }}>
+          <WAHeader name="AIRIS · Asistente" status={status} avatar={<LambdaAvatar size={84} />} />
+        </div>
+        <InputBar />
+      </div>
+    </div>
+  );
+};
+
 // ------------------------------------------------------------------ video
 
 export const V10Avalancha: React.FC = () => {
@@ -567,6 +730,14 @@ export const V10Avalancha: React.FC = () => {
             <AbsoluteFill style={{ background: "rgba(4,3,14,0.62)", opacity: enter(frame, V10.detail, 12) * leave(frame, V10.detailOut, 10) }} />
             <DetailSheet />
             <Cursor />
+
+            {frame >= V10.assist - 2 && frame < V10.assistOut + 14 ? (
+              <>
+                <Headline lines={["Y vos, con tu asistente."]} start={V10.assist} exitAt={V10.assistOut} y={220} size={64} />
+                <AssistantChat />
+                <Footnote text="Datos de ejemplo" start={V10.summary} y={1660} />
+              </>
+            ) : null}
 
             <Headline lines={["Ninguna consulta", { text: "se pierde.", italic: true }]} start={V10.claim} exitAt={V10.end - 14} y={900} size={104} />
           </Camera>

@@ -484,7 +484,7 @@ def v9():
 
 def v10():
     V = consts("V10Avalancha.tsx", "V10")
-    dur = 1112 / FPS
+    dur = float(re.search(r"V10_DURATION = (\d+)", (VIDEOS / "V10Avalancha.tsx").read_text()).group(1)) / FPS
     black, calm = f2s(V["black"]), f2s(V["calm"])
     m = np.zeros((2, secs(dur) + SR))
     # Avalancha: zumbido grave que sube de tensión hasta el corte a negro
@@ -527,6 +527,16 @@ def v10():
     c.add(S.whoosh(0.5), V["detail"], 0.25)
     c.add(S.confirm(), V["sent"] + 2, 0.65)
     c.add(S.whoosh(0.8), V["zoomOut"], 0.35)
+    # asistente personal
+    c.add(S.whoosh(0.6), V["assist"], 0.35)
+    c.add(S.tick(0.8), V["rec"], 0.6)
+    c.add(S.pop(2), V["voice"], 0.55)
+    c.add(S.pop(-2), V["aReply"] + 2, 0.5)
+    c.add(S.pop(0), V["pdf"] + 2, 0.45)
+    c.add(S.pop(3), V["ask2"] + 2, 0.5)
+    c.add(S.pop(-1), V["summary"] + 2, 0.5)
+    for k in range(7):
+        c.add(S.tick(0.6), V["summary"] + 8 + k * 6, 0.3)
     c.add(S.swish(), V["claim"], 0.45)
     end_logo(c, V["end"])
     return m, c.bus, dur, 0.55, [(black + 0.02, calm)]

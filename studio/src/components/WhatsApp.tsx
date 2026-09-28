@@ -103,18 +103,19 @@ export const WABubble: React.FC<{
 };
 
 /** Barra superior del chat: flecha, foto, nombre y estado ("en línea" / "escribiendo…"). */
-export const WAHeader: React.FC<{ name: string; status?: string; scale?: number; unread?: number; badge?: string }> = ({
+export const WAHeader: React.FC<{ name: string; status?: string; scale?: number; unread?: number; badge?: string; avatar?: React.ReactNode }> = ({
   name,
   status = "en línea",
   scale = 1,
   unread = 0,
   badge = "1",
+  avatar,
 }) => (
   <div style={{ display: "flex", alignItems: "center", gap: 22 * scale, height: 130 * scale, padding: `0 ${28 * scale}px`, background: WA.header }}>
     <svg width={30 * scale} height={30 * scale} viewBox="0 0 24 24">
       <path d="M15 4 L7 12 L15 20" stroke={WA.text} strokeWidth={2.4} fill="none" strokeLinecap="round" strokeLinejoin="round" />
     </svg>
-    <div
+    {avatar ?? (<div
       style={{
         width: 84 * scale,
         height: 84 * scale,
@@ -131,7 +132,7 @@ export const WAHeader: React.FC<{ name: string; status?: string; scale?: number;
       }}
     >
       {name[0]}
-    </div>
+    </div>)}
     <div style={{ flex: 1, minWidth: 0 }}>
       <div style={{ fontFamily: FONTS.body, fontWeight: 600, fontSize: 40 * scale, color: WA.text, lineHeight: 1.15 }}>{name}</div>
       <div style={{ fontFamily: FONTS.body, fontWeight: 400, fontSize: 28 * scale, color: status.startsWith("escrib") ? WA.unread : WA.meta }}>{status}</div>

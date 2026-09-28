@@ -1,4 +1,4 @@
-# V10: Avalancha (37 s)
+# V10: Avalancha (46 s)
 
 Dolor: las mismas preguntas todo el día, en todos los chats. Idea del dueño.
 
@@ -13,5 +13,6 @@ Dolor: las mismas preguntas todo el día, en todos los chats. Idea del dueño.
 | 22,5 a 26 s | Aparece el tablero "Contactos de hoy" (Calificados, Para contactar, Descartados) y las cartas salen del mazo a su columna | | Una carta y un pop por contacto |
 | 26 a 29,5 s | Zoom a la tarjeta de Laura; un cursor hace clic, se abre su ficha y hace clic en "Enviar presupuesto" | Presupuesto enviado | Clics y confirmación |
 | 29,6 a 30,5 s | La cámara vuelve al tablero completo | | Barrido |
-| 31,1 a 33,9 s | Calma | Ninguna consulta se pierde. | |
-| 33,9 a 37 s | Cierre con logo | Que ningún mensaje quede sin respuesta. / Consultoría gratuita de 30 minutos | Cierre de marca |
+| 31 a 40 s | Chat de WhatsApp con "AIRIS · Asistente": el dueño graba un audio, sale la nota de voz con la transcripción "Enviale un presupuesto a Julieta por el implante.", el asistente contesta "Listo, presupuesto enviado a Julieta" y manda el PDF; el dueño pregunta "¿Cómo viene la semana?" y llega el resumen (consultas respondidas, llamadas atendidas, contactos calientes y fríos, para atender vos, esperan presupuesto, esperan receta) | Y vos, con tu asistente. / Datos de ejemplo | Clic de grabar, pops por mensaje, ticks por cada línea del resumen |
+| 40,3 a 42,9 s | Calma | Ninguna consulta se pierde. | |
+| 42,9 a 46 s | Cierre con logo | Que ningún mensaje quede sin respuesta. / Consultoría gratuita de 30 minutos | Cierre de marca |
