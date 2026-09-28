@@ -3,3 +3,6 @@ inbox/*
 !inbox/.gitkeep
 output/
 node_modules/
+
+# Python
+__pycache__/

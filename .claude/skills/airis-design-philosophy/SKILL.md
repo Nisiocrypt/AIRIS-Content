@@ -43,6 +43,9 @@ Cuatro pilares. Cada pieza tiene que apoyar al menos uno:
 - Vocabulario propio: AI Operations, handoff humano, operación, workflow, trazable,
   medible, "procesos antes que bots".
 - Evitar jerga vacía de IA (ver lista en `anti-slop`).
+- En videos y piezas de marketing se le habla al dueño, sin nada técnico. "AI
+  Operations", "workflow" o "handoff" son palabras internas: en pantalla se dice qué
+  pasa ("te pasa la llamada", "queda anotado en tu agenda").
 
 ## 3. Sistema visual
 

@@ -15,9 +15,11 @@ Si una regla choca con otra skill, gana esta.
    textos chicos en mayúsculas encima de un titular ("AGENTE IA · WHATSAPP 24/7",
    "CASO DOCUMENTADO", "NUEVO", "PASO 1"). El titular va solo.
    *Ejemplo de lo que no:* el reel v1 tiene una etiqueta arriba de cada título.
-2. **Sin guiones de IA.** Prohibido el guion largo (—) y el guion medio (–) en cualquier
-   texto en pantalla, subtítulo, guion de voz o copy del post. Tampoco reemplazarlos por
-   " - " suelto. Usar punto, coma, dos puntos o partir en dos frases.
+2. **Sin guiones de IA.** Confirmado por el dueño, son las dos cosas:
+   - Prohibido el guion largo (—) y el guion medio (–) en cualquier texto en pantalla,
+     subtítulo, guion de voz o copy del post. Tampoco reemplazarlos por " - " suelto.
+     Usar punto, coma, dos puntos o partir en dos frases.
+   - Prohibidos los textos que suenan escritos por una IA (lista abajo).
 3. **Sin palabras clave marcadas en color.** El titular entero va en un solo color. Nada
    de palabras en violeta, degradé, resaltador, caja detrás, subrayado animado ni color
    distinto por palabra en subtítulos. El énfasis se logra con itálica (mismo color),
@@ -26,7 +28,12 @@ Si una regla choca con otra skill, gana esta.
 4. **Textos centrados.** Todo texto en pantalla alineado al centro horizontal, dentro de
    la zona segura. Excepción única: el contenido interno de mockups de UI (burbujas de
    chat a izquierda y derecha), pero el mockup en sí va centrado.
-5. **Animaciones originales, nivel corporativo experto.** Nada que parezca preset o
+5. **Nada técnico.** El video le habla a un dueño de empresa o clínica. Prohibido en
+   pantalla, subtítulos y locución: API, CRM, webhook, workflow, orquestación, pipeline,
+   backend, integraciones, LLM, prompt, tokens, modelo de IA, nombres de proveedores
+   (Twilio, Vapi, Retell, n8n, HubSpot, Zapier). Se dice lo que el dueño ve: "tu agenda",
+   "tu registro de pacientes", "se conecta con lo que ya usás".
+6. **Animaciones originales, nivel corporativo experto.** Nada que parezca preset o
    plantilla (lista abajo). Cada movimiento tiene intención y viene de
    `airis-motion-graphics`.
 

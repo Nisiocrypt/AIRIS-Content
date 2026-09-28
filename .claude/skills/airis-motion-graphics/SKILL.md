@@ -16,8 +16,14 @@ izquierda) y el sitio en `docs/reference/web/`.
 
 ## Herramienta
 
-- **Producción**: Remotion en `studio/` (crear con la skill `remotion-best-practices` si
-  no existe). Fuentes con `@remotion/google-fonts` (Unbounded, Poppins). Motion blur con
+- **Producción**: Remotion en `studio/` (ya existe, ver `studio/README.md`). Antes de crear
+  un componente nuevo, usar la librería de `studio/src/components/`: `Headline` (titular
+  con máscara, se ajusta solo al ancho), `Body`, `Footnote`, `Glass`, `Bubble`, `Typing`,
+  `CallCard`, `ResultCard`, `ActionChip`, `Notification`, `PersonCard`, `VoicemailCard`,
+  `LightStrands`, fondos (`NightBackground`, `PastelBackground`, `VioletBackground`,
+  `GreyBackground`, `DayCycleBackground`), `Camera`, `Grain`, `Vignette`, `Logo`,
+  `LambdaAvatar`, `EndCard`, `FlowLine`, `LightSweep`, `LambdaWipe`. Los videos de la
+  primera tanda (`studio/src/videos/`) sirven de ejemplo de cada estilo. Fuentes con `@remotion/google-fonts` (Unbounded, Poppins). Motion blur con
   `@remotion/motion-blur`. Transiciones con `@remotion/transitions` solo como base para
   transiciones propias.
 - **Prototipo rápido**: HyperFrames (HTML + GSAP).
@@ -116,6 +122,19 @@ al ritmo de la música. Nada de fades genéricos entre todas las escenas.
 - Imágenes de personas o producto solo si son reales (material del cliente o capturas
   propias). Nada de imágenes generadas por IA de personas.
 - Para mockups de UI, reconstruirlos en código a partir de las capturas del sitio.
+
+## Lecciones de la primera tanda
+
+- Medir texto recién con las fuentes cargadas (`useFontsReady`): si se mide antes, el
+  titular queda más grande que la pantalla y el error se cachea.
+- Un titular nuevo entra recién cuando el anterior terminó de salir (dejar 12 a 14
+  frames), si no las líneas se pisan.
+- El primer frame ya muestra el gancho en movimiento (arrancar la entrada con `start`
+  negativo).
+- Unbounded es muy ancha: a 100 px entran unos 13 caracteres por línea en 900 px.
+- Las hebras de fondo pasan por debajo del texto, nunca por encima.
+- Revisar con `node scripts/stills.mjs` + `scripts/sheet.py` antes de renderizar todo, y
+  después mirar la hoja de contactos del video final (`output/qa/`).
 
 ## Flujo de trabajo
 

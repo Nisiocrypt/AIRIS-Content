@@ -27,6 +27,14 @@ BANNED = [
 ]
 BANNED_RE = re.compile("|".join(re.escape(b) for b in BANNED), re.IGNORECASE)
 
+# Jerga técnica: prohibida en guiones y subtítulos (el video le habla a un dueño).
+JARGON = [
+    "api", "apis", "crm", "webhook", "webhooks", "workflow", "workflows", "orquestación",
+    "pipeline", "backend", "llm", "prompt", "prompts", "tokens", "twilio", "vapi", "retell",
+    "n8n", "hubspot", "zapier", "handoff", "integraciones", "machine learning",
+]
+JARGON_RE = re.compile(r"\b(" + "|".join(re.escape(j) for j in JARGON) + r")\b", re.IGNORECASE)
+
 CODE_WARNINGS = [
     (re.compile(r"text-?align\s*[:=]\s*['\"]?(left|right|start|end)", re.I),
      "texto no centrado (regla 4)"),
@@ -37,7 +45,7 @@ CODE_WARNINGS = [
     (re.compile(r"<span[^>]*style=\{?\{?[^>]*\bcolor\s*:", re.I),
      "span con color propio: posible keyword en color (regla 3)"),
     (re.compile(r"typewriter|bounce|elastic|glitch", re.I),
-     "efecto de plantilla (regla 5)"),
+     "efecto de plantilla (regla 6)"),
 ]
 
 
@@ -71,6 +79,10 @@ def check(path):
         m = BANNED_RE.search(line)
         if m:
             errors.append(f"{loc}: frase de IA prohibida '{m.group(0)}': {line.strip()[:90]}")
+        if ext in TEXT_EXT:
+            j = JARGON_RE.search(line)
+            if j:
+                errors.append(f"{loc}: lenguaje técnico '{j.group(0)}' (regla 5): {line.strip()[:90]}")
         if ext in CODE_EXT:
             for rx, msg in CODE_WARNINGS:
                 if rx.search(line):

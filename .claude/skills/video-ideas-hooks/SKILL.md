@@ -10,6 +10,13 @@ Todo guion pasa por `scripts/anti_slop_check.py` antes de producirse.
 
 ## 1. A quién le hablamos
 
+**Siempre al dueño o dueña** de la empresa o del consultorio: alguien que no es técnico y
+quiere saber qué cambia en su día, en su agenda y en su plata. Todo lo que diga el video
+tiene que poder entenderlo sin saber nada de tecnología. Se habla de turnos, pacientes,
+clientes, llamadas, mensajes, agenda, tiempo y plata. Nunca de cómo funciona por dentro
+(nada de API, CRM, webhook, workflow, integraciones, modelos ni nombres de proveedores).
+
+
 | Segmento | Dolor que reconoce al instante | Deseo |
 |---|---|---|
 | Odontólogos, kinesiólogos, nutricionistas, psicólogos | WhatsApp a la noche, turnos que no vienen, recordar a mano | Consultorio en orden sin contratar más gente |
@@ -171,7 +178,14 @@ Llamadas con IA:
 21. **Tu recepcionista vuelve a atender personas**: el teléfono deja de interrumpir a
     quien está en el mostrador.
 
-## 7. CTA
+## 7. Tandas de prueba
+
+La primera tanda (8 videos, ángulos y estilos distintos) está en
+`entregas/2026-09-28-tanda-1/` con su matriz de prueba. Cuando haya números, anotar en ese
+README qué gancho, estilo, duración y llamado a la acción ganaron, y usar eso para puntuar
+las ideas nuevas.
+
+## 8. CTA
 
 Un solo CTA por video. Opciones de la casa: "Hablá con un humano (por ahora)",
 "Consultoría gratuita de 30 minutos", "Escribinos por WhatsApp". Nunca "link en bio"

@@ -20,6 +20,11 @@ visuales de nivel agencia.
 | `edit-dropped-video` | Soltás un video crudo en `inbox/` y Claude lo edita completo |
 | `remotion-best-practices` | Skill oficial de Remotion (instalada con `npx skills add remotion-dev/skills`) |
 
+## Estudio de video
+
+- `studio/`: proyecto de Remotion con la librería de marca y los videos (ver `studio/README.md`).
+- `entregas/2026-09-28-tanda-1/`: primera tanda de 8 videos para probar ángulos, con su matriz.
+
 ## Cómo usarlo
 
 1. `bash scripts/setup-video-stack.sh` (ffmpeg, WhisperX, auto-editor, Kinocut).

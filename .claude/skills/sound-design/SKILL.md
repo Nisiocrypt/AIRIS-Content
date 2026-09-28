@@ -69,6 +69,20 @@ Contexto y reglas de marca en `docs/research/recepcionista-llamadas-ia.md`.
 - Arco: tensión en el gancho → entra el beat en el logo → corte a silencio antes del dato
   clave → resolución en el CTA.
 
+## Pipeline actual (sin claves de API)
+
+`studio/audio/` sintetiza todo: `engine.py` (osciladores, filtros, reverb, limitador,
+master), `sfx.py` (pop, whoosh, ding, confirmación, timbre propio, atención, corte,
+transferencia, alerta, golpe, riser, brillo) y `build.py` (una partitura por video que lee
+los tiempos de los `.tsx`). Reglas que salieron de la primera tanda:
+- La música se normaliza sola a -17 LUFS antes de sumar efectos; el master final va a
+  -14 LUFS y -1 dBTP.
+- Siempre hay sonido en el frame 0 (golpe suave + aire).
+- El timbre de teléfono es un tono sostenido: va 10 dB más bajo que un pop.
+- Los silencios dramáticos se aplican después de la reverb, si no la cola los rellena.
+- Validar sin escuchar con `audio/inspect_mix.py` (espectrograma + envolvente) y
+  `audio/overview.py`; igual conviene que una persona lo escuche antes de publicar.
+
 ## Mezcla y master (FFmpeg)
 
 - Voz ≈ -16 LUFS; master final -14 LUFS integrados, true peak ≤ -1 dBTP.
