@@ -1,0 +1,5 @@
+# Material crudo y renders pesados: no versionar
+inbox/*
+!inbox/.gitkeep
+output/
+node_modules/
