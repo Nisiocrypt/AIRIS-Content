@@ -12,6 +12,7 @@ import { V7Contestador, V7_DURATION } from "./videos/V7Contestador";
 import { V8Titulo, V8_DURATION } from "./videos/V8Titulo";
 import { V9Probe, V9_DURATION } from "./videos/V9Probe";
 import { V10Avalancha, V10_DURATION } from "./videos/V10Avalancha";
+import { V11BrandFilm, V11_DURATION, V11_FPS, V11_H, V11_W } from "./videos/V11BrandFilm";
 
 ensureFonts();
 
@@ -34,6 +35,8 @@ export const RemotionRoot: React.FC = () => {
       {VIDEOS.map((v) => (
         <Composition key={v.id} id={v.id} component={v.component} durationInFrames={v.duration} fps={FPS} width={WIDTH} height={HEIGHT} />
       ))}
+      {/* Brand film horizontal: 16:9 a 24 fps (4K con --scale=2) */}
+      <Composition id="V11-BrandFilm" component={V11BrandFilm} durationInFrames={V11_DURATION} fps={V11_FPS} width={V11_W} height={V11_H} />
       {/* Variante con el logo real pixelado en vez de la barra */}
       <Composition id="V9b-ProbeLogo" component={V9Probe} defaultProps={{ censor: "logo" as const }} durationInFrames={V9_DURATION} fps={FPS} width={WIDTH} height={HEIGHT} />
     </>

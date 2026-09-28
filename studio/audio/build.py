@@ -542,7 +542,91 @@ def v10():
     return m, c.bus, dur, 0.55, [(black + 0.02, calm)]
 
 
-BUILDERS = {"v1": v1, "v2": v2, "v3": v3, "v4": v4, "v5": v5, "v6": v6, "v7": v7, "v8": v8, "v9": v9, "v10": v10}
+def v11():
+    """Brand film 16:9 a 24 fps: los tiempos del .tsx están en frames de 24."""
+    src = (VIDEOS / "V11BrandFilm.tsx").read_text()
+    V = consts("V11BrandFilm.tsx", "V11")
+    dur = float(re.search(r"V11_DURATION = (\d+)", src).group(1)) / 24
+    m = np.zeros((2, secs(dur) + SR))
+    c = Cues(dur)
+
+    def at(f24: float) -> float:
+        return f24 * FPS / 24
+
+    def add(clip, f24, gain, off=0.0):
+        c.add(clip, at(f24), gain, offset_s=off)
+
+    # 01 caos: la línea, el titular, el viaje y el golpe del corte
+    add(S.tick(0.6), 0, 0.5)
+    add(S.swish(), 6, 0.3)
+    add(S.whoosh_low(), 26, 0.6)
+    for k in range(10):
+        add(S.pop(-6 + k % 5), 40 + k * 4.5, 0.22)
+    add(S.swish(), 64, 0.35)
+    add(S.impact(1.6), V["signal"], 0.8)
+    # 02 la señal: cada bloque que se conecta hace clic
+    s = V["signal"]
+    for k in range(5):
+        add(S.tick(0.9), s + 10 + k * 10, 0.55)
+    add(S.swish(), s + 58, 0.35)
+    add(S.reverse_swell(0.8), s + 96, 0.5, -0.8)
+    # 03 el sistema: el mensaje entra al núcleo y cinco pasos
+    y = V["system"]
+    add(S.impact(1.4), y, 0.6)
+    add(S.pop(2), y + 26, 0.45)
+    add(S.whoosh(0.5), y + 40, 0.3)
+    for k in range(5):
+        add(S.tick(1.0), y + 64 + k * 8, 0.55)
+    add(S.confirm(), y + 100, 0.45)
+    add(S.swish(), y + 112, 0.4)
+    add(S.impact(1.2), y + 126, 0.6)
+    add(S.whoosh(0.7), y + 134, 0.45)
+    # 04 el motor: un clic por nodo
+    e = V["engine"]
+    for k in range(7):
+        add(S.tick(0.9), e + 14 + k * 13 + 8, 0.5)
+        add(S.pop(k % 4), e + 14 + k * 13 + 10, 0.25)
+    add(S.whoosh_low(), e + 112, 0.5)
+    add(S.swish(), e + 126, 0.35)
+    # 05 escala: el contador, el alejamiento y las líneas que se enderezan
+    sc = V["scale"]
+    add(S.tick_roll(1.8, 16), sc + 8, 0.4)
+    add(S.whoosh(0.9), sc + 54, 0.4)
+    add(S.swish(), sc + 86, 0.35)
+    add(S.swish(), sc + 110, 0.35)
+    add(S.whoosh(0.7), sc + 122, 0.45)
+    add(S.confirm(), sc + 140, 0.5)
+    # 06 antes y después
+    sp = V["split"]
+    add(S.impact(1.2), sp, 0.5)
+    for k in range(7):
+        add(S.tick(0.5), sp + 14 + k * 12, 0.25)
+    add(S.whoosh(1.0), sp + 40, 0.45)
+    add(S.swish(), sp + 44, 0.3)
+    add(S.swish(), sp + 72, 0.3)
+    # 07 el agente
+    ag = V["agent"]
+    add(S.pop(0), ag + 6, 0.5)
+    for k in range(6):
+        add(S.tick(0.8), ag + 16 + k * 4, 0.3)
+    add(S.whoosh(0.5), ag + 46, 0.4)
+    add(S.pop(4), ag + 64, 0.5)
+    for k in range(3):
+        add(S.tick(0.9), ag + 76 + k * 7, 0.45)
+    add(S.swish(), ag + 104, 0.35)
+    add(S.swish(), ag + 122, 0.35)
+    add(S.whoosh_low(), ag + 136, 0.55)
+    # 08 final: todo converge en el logo
+    fi = V["finale"]
+    add(S.riser(1.4), fi + 70, 0.4, -1.4)
+    add(S.impact(2.4), fi + 70, 0.9)
+    add(S.shimmer(), fi + 72, 0.4)
+    add(S.tick(0.7), fi + 112, 0.4)
+    add(S.tick(0.7), fi + 118, 0.4)
+    return m, c.bus, dur, 0.5
+
+
+BUILDERS = {"v1": v1, "v2": v2, "v3": v3, "v4": v4, "v5": v5, "v6": v6, "v7": v7, "v8": v8, "v9": v9, "v10": v10, "v11": v11}
 
 
 BED_LUFS = -17.0
@@ -637,7 +721,8 @@ def build(name: str) -> dict:
     # leve pozo en medios graves (150-400 Hz) para que no se embarre en parlantes chicos
     music = music - 0.3 * bandpass(music, 150, 400)
     loud = pyln.Meter(SR).integrated_loudness(music.T)
-    music = music * db(BED_LUFS - loud) * (music_gain / 0.5)
+    # sin partitura propia (todo el tema es de biblioteca) la cama queda en cero
+    music = music * db(BED_LUFS - loud) * (music_gain / 0.5) if np.isfinite(loud) else music * 0
     cfg = load_tracks().get(name)
     if cfg:
         enter = f2s(consts(*ENTER[name][:2])[ENTER[name][2]]) if name in ENTER else 0.0
