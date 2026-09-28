@@ -1,6 +1,6 @@
 ---
 name: anti-slop
-description: Reglas obligatorias de lo que NO puede aparecer en videos, reels, motion graphics, guiones ni subtítulos de AIRIS (etiquetas arriba de títulos, guiones largos, palabras resaltadas en color, texto no centrado, animaciones de plantilla, estética genérica de IA). Cargar SIEMPRE al escribir un guion, diseñar escenas, animar o revisar un render antes de entregarlo.
+description: Reglas obligatorias de lo que NO puede aparecer en videos, reels, motion graphics, guiones ni subtítulos de AIRIS (etiquetas arriba de títulos, guiones largos, palabras resaltadas en color, texto no centrado, animaciones de plantilla, estética genérica de IA, clichés de llamadas con IA). Cargar SIEMPRE al escribir un guion, diseñar escenas, animar o revisar un render antes de entregarlo.
 ---
 
 # Anti-slop
@@ -61,6 +61,25 @@ flares de stock; neón saturado sin control; mockups con texto ilegible o invent
 interfaces falsas con lorem ipsum; métricas inventadas; composición estática sin
 profundidad ni cámara.
 
+**Sonido:** efectos de meme o chiste (vine boom, bruh, windows-xp-error, spongebob-fail,
+anime-wow, wilhelm scream y similares, aunque vengan en `@remotion/sfx`); sonidos de
+sistema de Apple o Windows; el ringtone del iPhone.
+
+**Llamadas con IA (recepcionista de voz):**
+- Orbes o esferas brillantes que "hablan" (el cliché de todo asistente de voz), robots
+  con auriculares, íconos de headset, imágenes de call center de stock y ecualizadores de
+  barras simétricas genéricos. La voz de AIRIS se ve con las hebras de luz.
+- Copias de la pantalla de llamada del iPhone o de cualquier UI de sistema.
+- Presentar una llamada armada como si fuera real, o usar la voz o la llamada de un
+  paciente real sin consentimiento escrito. Clonar la voz de una persona sin permiso.
+- Un asistente que no se identifica como asistente virtual en su primera frase.
+- Recortar las pausas para que el sistema parezca más rápido de lo que es.
+- Mostrar capacidades que AIRIS no tiene implementadas.
+- Los clichés de la categoría: "Nunca más pierdas una llamada", "la recepcionista que
+  nunca duerme", "atiende sin cansarse", "incansable".
+- Estadísticas de llamadas perdidas sacadas de blogs de proveedores. Solo datos propios
+  medidos o de una fuente primaria citada en pantalla.
+
 **Composición:** texto pegado a los bordes o fuera de zona segura; más de un mensaje por
 escena; pantallas quietas más de 2,5 s sin ningún movimiento de cámara o elemento; íconos
 de estilos mezclados.
@@ -81,4 +100,6 @@ profundidades, desenfoque de fondo. El centrado es del texto, no de la vida de l
    - [ ] Todo el texto está centrado y dentro de la zona segura.
    - [ ] Ninguna transición o entrada se ve como preset.
    - [ ] No hay imágenes de IA genéricas, datos inventados ni texto ilegible.
+   - [ ] Si hay una llamada: el asistente se identifica, la llamada está marcada como
+         de ejemplo y no hay orbes, robots ni headsets.
 3. Si algo falla, se corrige y se vuelve a renderizar. No se entrega con "detalles menores".

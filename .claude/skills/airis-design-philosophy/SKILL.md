@@ -1,6 +1,6 @@
 ---
 name: airis-design-philosophy
-description: Filosofía de diseño, voz y sistema visual de AIRIS (glassmorphism tipo iOS en violetas, Unbounded + Poppins, componentes firma). Cargar antes de diseñar cualquier pieza visual, video, reel, anuncio, thumbnail o guion de AIRIS, para que todo se vea y suene a la marca.
+description: Filosofía de diseño, voz y sistema visual de AIRIS (glassmorphism tipo iOS en violetas, Unbounded + Poppins, componentes firma de WhatsApp y de llamadas con IA). Cargar antes de diseñar cualquier pieza visual, video, reel, anuncio, thumbnail o guion de AIRIS, incluidos los de la recepcionista de llamadas, para que todo se vea y suene a la marca.
 ---
 
 # AIRIS: filosofía de diseño
@@ -15,7 +15,13 @@ manda `anti-slop`.
 
 ## 1. La idea que todo diseño tiene que transmitir
 
-**AIRIS convierte mensajes en operaciones terminadas, sin sacarle el control a las personas.**
+**AIRIS convierte mensajes y llamadas en operaciones terminadas, sin sacarle el control
+a las personas.**
+
+Canales de entrada que comunicamos:
+- **WhatsApp y chats**: "Un mensaje entra. La operación continúa."
+- **Llamadas con IA (recepcionista de voz)**: "Una llamada entra. La operación continúa."
+  Investigación completa en `docs/research/recepcionista-llamadas-ia.md`.
 
 Cuatro pilares. Cada pieza tiene que apoyar al menos uno:
 1. **Operación, no conversación.** El chat es la interfaz; lo que importa es la acción
@@ -94,9 +100,41 @@ Reconstruir en código, nunca como captura pegada:
 6. **Lockscreen de iPhone** con notificación de recordatorio.
 7. **Logo reveal** con `assets/brand/logo-light.svg`.
 
+### Componentes de llamadas (recepcionista de voz)
+
+Referencia visual del sitio en inglés: `docs/reference/web/voz/`.
+
+8. **Llamada entrante**: tarjeta de glass centrada con "Llamada entrante", hora
+   ("13:05"), "Paciente" y número enmascarado ("+54 9 11 •••• 4821"), ícono Lucide
+   `phone-incoming`. Pantalla de llamada propia de AIRIS: inspirada en iOS, nunca una
+   copia de la pantalla de llamada del iPhone.
+9. **Transcripción en vivo**: burbujas rotuladas "Asistente virtual", "Paciente" y, si
+   hay derivación, "Sofía · Recepción" (como la tarjeta "The call gets answered" del
+   sitio). Cada frase aparece cuando se dice, completa, nunca letra por letra.
+10. **Voz visualizada**: las hebras de luz de la marca reaccionan a la voz del asistente
+    (grosor y brillo según el audio). Es la firma visual de la voz de AIRIS.
+11. **Acciones durante la llamada**: tarjetitas que aparecen mientras la llamada sigue:
+    "Agenda consultada", "Turno reservado · Vie 8 · 10:30", "Obra social registrada".
+12. **Resumen de llamada**: al cortar, una tarjeta con duración, motivo, acción hecha y
+    próximo paso ("Confirmación enviada por WhatsApp").
+13. **Transferencia a una persona**: "Transfiriendo a Sofía · Recepción" con el resumen
+    de contexto que recibe la persona.
+
+Reglas propias de las llamadas:
+- El asistente **siempre se identifica** en su primera frase: "Hola, te atiende el
+  asistente virtual de [consultorio]". Es parte de la marca (transparencia), no un
+  trámite.
+- Las llamadas de los videos son de ejemplo y se aclara con una línea chica al pie
+  ("Llamada de ejemplo"). Nunca se usa la voz o la llamada de un paciente real.
+- Mostrar solo capacidades que AIRIS implementa hoy (confirmar con el equipo: idioma y
+  acento de la voz, transferencia en vivo, llamadas simultáneas, grabación, integración
+  con la agenda).
+
 ## 5. Checklist de marca (antes de entregar)
 - [ ] ¿Se entiende en qué operación ayuda AIRIS, no solo que "hay IA"?
 - [ ] ¿Aparece el control humano o la trazabilidad al menos una vez?
 - [ ] ¿Cada dato mostrado es real y tiene contexto?
+- [ ] Si hay una llamada: ¿el asistente se identifica y la llamada termina en una
+      operación hecha o en una derivación con contexto?
 - [ ] ¿Tipografías, colores y glass coinciden con esta skill?
 - [ ] ¿Pasa el checklist de `anti-slop`?

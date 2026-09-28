@@ -1,6 +1,6 @@
 ---
 name: video-ideas-hooks
-description: Generar ideas de videos, hooks de los primeros 3 segundos, guiones y estrategia de marketing aplicada para AIRIS (reels, shorts, anuncios, LinkedIn). Usar cuando se pida idear contenido, escribir un guion, mejorar un hook, planificar una serie o un calendario de videos.
+description: Generar ideas de videos, hooks de los primeros 3 segundos, guiones y estrategia de marketing aplicada para AIRIS (reels, shorts, anuncios, LinkedIn), incluida la recepcionista de llamadas con IA. Usar cuando se pida idear contenido, escribir un guion, mejorar un hook, planificar una serie o un calendario de videos.
 ---
 
 # Ideas de video, hooks y marketing aplicado
@@ -15,10 +15,15 @@ Todo guion pasa por `scripts/anti_slop_check.py` antes de producirse.
 | Odontólogos, kinesiólogos, nutricionistas, psicólogos | WhatsApp a la noche, turnos que no vienen, recordar a mano | Consultorio en orden sin contratar más gente |
 | Clínicas estéticas | Consultas de precio que no convierten, seguimiento de tratamientos | Más agenda llena con el mismo equipo |
 | PyMEs de servicios, concesionarios, inmobiliarias | Leads que se enfrían, "¿che, alguien respondió?", planillas | Que nada se pierda entre chats y Excel |
+| Negocios que viven del teléfono (consultorios con pacientes mayores, clínicas con mucho volumen, servicios con urgencias) | El teléfono suena mientras atendés, la recepción no da abasto al mediodía, fuera de horario salta el contestador | Que cada llamada termine en un turno o en una derivación, sin cortar la consulta |
 
 Objeciones a desactivar (una por video como máximo): "la IA le va a responder mal a mis
 pacientes", "voy a perder el control", "es caro y en dólares", "no tengo tiempo de
 implementarlo", "ya tengo un chatbot".
+
+Objeciones propias de las llamadas: "mis pacientes mayores no quieren hablar con una
+máquina", "va a sonar robótica", "¿y si entiende mal?", "¿graba las llamadas?".
+Respuestas y contexto en `docs/research/recepcionista-llamadas-ia.md`.
 
 ## 2. Niveles de conciencia (elegir uno por video)
 
@@ -55,10 +60,39 @@ Tipos de hook (con ejemplos AIRIS listos para adaptar):
 | Antes / después visual | Pantalla con 17 chats sin leer que se vacía en 3 s |
 | Humor de la casa | "Construyendo Skynet para PyMEs. Pero con permiso." |
 
+Hooks para la recepcionista de llamadas:
+
+| Tipo | Ejemplo en pantalla |
+|---|---|
+| Escena reconocible | "Tenés las manos ocupadas. El teléfono suena." |
+| Hora concreta | "13:05. La recepción está almorzando." |
+| Audio primero | "Escuchá esta llamada." (el audio arranca en el frame 0) |
+| Contradicción | "El contestador no agenda turnos." |
+| Resultado | "La llamada terminó. El turno ya está en la agenda." |
+| Transparencia | "Te atiende un asistente virtual. Y lo dice." |
+| Control humano | "Sabe cuándo pasarte la llamada." |
+| Pregunta operativa | "¿Quién atiende cuando vos no podés?" |
+
 Hooks prohibidos: "¿Sabías que...?", "En este video...", "Esto va a cambiar tu negocio",
-cualquier cosa que no se pueda mostrar en pantalla.
+cualquier cosa que no se pueda mostrar en pantalla. En llamadas, además: "Nunca más
+pierdas una llamada", "La recepcionista que nunca duerme", "Atiende 24/7 sin cansarse"
+(son los clichés de toda la categoría; AIRIS se diferencia mostrando la operación
+terminada y la derivación a una persona).
 
 ## 4. Estructuras de guion
+
+**Demo de llamada de 25 a 40 s (audio primero):**
+1. Hook (0 a 3 s): suena el teléfono en una escena reconocible, texto de 7 palabras o
+   menos.
+2. Atiende (3 a 6 s): el asistente se identifica ("Hola, te atiende el asistente
+   virtual de...") y se ve la voz en las hebras de luz.
+3. Llamada (6 a 25 s): transcripción por frase + tarjetas de acción que aparecen
+   mientras hablan (agenda consultada, turno reservado).
+4. Resultado (25 a 32 s): resumen de la llamada y confirmación que llega por WhatsApp.
+5. Cierre: "Una llamada entra. La operación continúa." + CTA. Línea al pie: "Llamada de
+   ejemplo".
+Variante con derivación: en el paso 3 el paciente dice algo urgente y la llamada pasa a
+una persona con el resumen en pantalla.
 
 **Reel de 20 a 30 s (PAS + prueba):**
 1. Hook (0 a 3 s): escena o dato.
@@ -115,6 +149,27 @@ facilidad de producción, encaje con la marca. Producir primero las de mayor pun
 11. **Lo que la IA no hace**: diagnóstico, decisiones clínicas, excepciones. Genera
     confianza.
 12. **Un mensaje entra. La operación continúa.**: el mapa de conexiones animado.
+
+Llamadas con IA:
+
+13. **Manos ocupadas**: odontólogo con un paciente en el sillón, suena el teléfono, el
+    asistente atiende y el turno aparece en la agenda sin que nadie se mueva.
+14. **13:05**: la recepción almuerza, entran tres llamadas y cada una termina en algo
+    hecho.
+15. **Escuchá esta llamada**: 30 s de llamada de ejemplo con transcripción y el
+    resultado al final. Pensado para ver con sonido.
+16. **El contestador no agenda turnos**: contestador tradicional vs asistente de voz,
+    misma llamada fuera de horario.
+17. **Llamada + WhatsApp**: la llamada termina y a los segundos llega la confirmación
+    por WhatsApp. Una sola operación, dos canales.
+18. **Sabe cuándo pasarte la llamada**: "Se me hinchó la cara y me duele mucho". No
+    diagnostica: transfiere a una persona con el resumen y prioridad alta.
+19. **Se presenta como lo que es**: la transparencia como valor. "No se hace pasar por
+    una persona."
+20. **Cada llamada deja registro**: los resúmenes de un día se apilan en una vista de
+    agenda (números reales o marcados como ilustrativos).
+21. **Tu recepcionista vuelve a atender personas**: el teléfono deja de interrumpir a
+    quien está en el mostrador.
 
 ## 7. CTA
 

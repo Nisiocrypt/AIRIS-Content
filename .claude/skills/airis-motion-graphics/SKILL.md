@@ -1,6 +1,6 @@
 ---
 name: airis-motion-graphics
-description: Cómo animar motion graphics de AIRIS a nivel corporativo experto con Remotion (o HyperFrames para prototipos) - timing, easing, cámara, transiciones propias, tipografía cinética centrada, render y QA. Usar siempre que se diseñe o anime un video, escena, stat card, mockup de chat o logo reveal para AIRIS.
+description: Cómo animar motion graphics de AIRIS a nivel corporativo experto con Remotion (o HyperFrames para prototipos) - timing, easing, cámara, transiciones propias, tipografía cinética centrada, render y QA. Usar siempre que se diseñe o anime un video, escena, stat card, mockup de chat, escena de llamada con IA o logo reveal para AIRIS.
 ---
 
 # AIRIS: motion graphics nivel corporativo
@@ -75,9 +75,31 @@ Construir cada uno como componente en `studio/src/signature/`:
    vacía y un micro flash del glow marca el dato final.
 7. **Logo reveal**: rayos radiales suaves + el trazo del logo dibujándose + un único
    impacto sonoro.
+8. **Voz en hebras** (llamadas): las hebras de luz reaccionan a la voz del asistente.
+   Con `@remotion/media-utils` (`useWindowedAudioData` + `visualizeAudio`, ver
+   `remotion-best-practices/remotion-markup/audio-visualization.md`) se toma la energía
+   de la voz frame a frame y se mapea a grosor, brillo y separación de las hebras,
+   suavizada (promedio de 3 a 5 frames) para que respire y no tiemble. Cuando habla el
+   paciente, las hebras se calman y baja su brillo.
+9. **Llamada → turno**: la tarjeta de llamada entrante se transforma (shared element) en
+   la tarjeta del turno reservado cuando la llamada termina.
 
-Transiciones permitidas: las 7 de arriba, corte seco con match de forma o color, y cortes
+Transiciones permitidas: las 9 de arriba, corte seco con match de forma o color, y cortes
 al ritmo de la música. Nada de fades genéricos entre todas las escenas.
+
+## Escenas de llamada (recepcionista de voz)
+
+- Componentes de `airis-design-philosophy` (llamada entrante, transcripción, acciones,
+  resumen, transferencia). Audio y diálogo según `sound-design`.
+- Timeline guiada por el audio: los tiempos por frase de WhisperX definen cuándo aparece
+  cada burbuja y cada tarjeta de acción. Nada aparece antes de que se diga.
+- Transcripción: cada frase entra completa con el reveal con máscara y un leve slide
+  desde su lado (asistente a la izquierda, paciente a la derecha); máximo 3 burbujas
+  visibles, las viejas suben y se desvanecen.
+- El timbre del teléfono se ve como dos anillos finos que se expanden desde el borde de
+  la tarjeta, sincronizados al sonido. Sin ondas de dibujo animado.
+- Al transferir, la línea de flujo lleva el resumen desde el asistente hasta la tarjeta
+  de la persona.
 
 ## Zona segura 9:16 (1080 × 1920)
 

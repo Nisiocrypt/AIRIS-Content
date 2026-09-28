@@ -19,10 +19,11 @@ EMOJI = re.compile(
 )
 BANNED = [
     "sabías que", "en este video te voy a mostrar", "imaginá un mundo", "en el mundo actual",
-    "hoy en día", "revolucion", "potenci", "desbloque", "transformá tu negocio",
+    "hoy en día", "revolucion", "potenciar", "potenciá", "potencia tu", "desbloque", "transformá tu negocio",
     "transforma tu negocio", "siguiente nivel", "sin precedentes", "game changer",
     "el futuro es ahora", "sinergia", "solución integral", "de vanguardia", "innovador",
-    "estás listo para dar el salto",
+    "estás listo para dar el salto", "nunca más pierdas", "nunca duerme", "sin cansarse",
+    "incansable",
 ]
 BANNED_RE = re.compile("|".join(re.escape(b) for b in BANNED), re.IGNORECASE)
 

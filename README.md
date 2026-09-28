@@ -5,6 +5,7 @@ visuales de nivel agencia.
 
 - **Investigación del stack** → [`docs/research/2026-09-stack-video-motion.md`](docs/research/2026-09-stack-video-motion.md)
 - **Análisis del reel de referencia** → [`docs/research/analisis-reel-airis-v1.md`](docs/research/analisis-reel-airis-v1.md)
+- **Recepcionista de llamadas con IA** (posicionamiento, guiones, producción de llamadas de demo) → [`docs/research/recepcionista-llamadas-ia.md`](docs/research/recepcionista-llamadas-ia.md)
 - **Análisis de airisautomation.com** (filosofía, sistema visual, capturas) → [`docs/research/analisis-web-airisautomation.md`](docs/research/analisis-web-airisautomation.md)
 
 ## Skills (`.claude/skills/`)
