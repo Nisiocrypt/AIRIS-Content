@@ -37,6 +37,7 @@ export const RemotionRoot: React.FC = () => {
       ))}
       {/* Brand film horizontal: 16:9 a 24 fps (4K con --scale=2) */}
       <Composition id="V11-BrandFilm" component={V11BrandFilm} durationInFrames={V11_DURATION} fps={V11_FPS} width={V11_W} height={V11_H} />
+      <Composition id="V11-BrandFilm-9x16" component={V11BrandFilm} defaultProps={{ vertical: true }} durationInFrames={V11_DURATION} fps={V11_FPS} width={V11_H} height={V11_W} />
       {/* Variante con el logo real pixelado en vez de la barra */}
       <Composition id="V9b-ProbeLogo" component={V9Probe} defaultProps={{ censor: "logo" as const }} durationInFrames={V9_DURATION} fps={FPS} width={WIDTH} height={HEIGHT} />
     </>

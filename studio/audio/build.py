@@ -620,10 +620,10 @@ def v11():
     add("pop", ag + 64, 0.45)
     for i in range(3):
         add("click_melodic", ag + 76 + i * 7, 0.35, st=[-2, 0, 2][i])
-    add("confirm", ag + 92, 0.3)
-    add("swoosh", ag + 102, 0.22)
-    add("swoosh", ag + 128, 0.22)
-    add("whoosh_deep", ag + 138, 0.5)
+    add("confirm", ag + 86, 0.3)
+    add("swoosh", ag + 92, 0.22)
+    add("swoosh", ag + 114, 0.22)
+    add("whoosh_deep", ag + 136, 0.5)
     # 08 final: todo converge en el logo
     fi = V["finale"]
     add("riser", fi + 70, 0.4, off=-1.8)

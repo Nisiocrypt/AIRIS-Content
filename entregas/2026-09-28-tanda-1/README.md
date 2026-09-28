@@ -17,7 +17,7 @@ dueños de consultorios y empresas. Todas se entienden sin sonido.
 | `09-probe.mp4` | 20 s | Plata y tiempo perdidos en un bot que no resolvió nada | Disruptivo: confesión con el nombre de la herramienta tachado | Crudo en negro, cortes secos y humor seco; después entra la marca | Hablá con un humano (por ahora) |
 | `09b-probe-logo.mp4` | 20 s | Igual que el 09 | Igual que el 09, pero se adivina "Manychat" pixelado | Igual que el 09 | Hablá con un humano (por ahora) |
 | `10-avalancha.mp4` | 46 s | Las mismas preguntas todo el día, en todos los chats | Avalancha que tapa la pantalla; la calma, 20 chats resueltos a la vez, un mini CRM y el asistente personal del dueño por WhatsApp (audio y resumen de la semana) | Chats con estilo WhatsApp; tiembla y corta a negro; alejamiento hasta la grilla, mazo de cartas, tablero de contactos, zoom y cursor con clic | Consultoría gratuita de 30 minutos |
-| `11-brand-film-1080p.mp4` | 45 s, 16:9 | Operación desordenada y a mano | Brand film institucional: AIRIS como el sistema que conecta todo el negocio | Horizontal, 1080p a 24 fps (se puede sacar en 4K); cámara que atraviesa texto, sigue señales por nodos, zooms de descubrimiento, pantalla dividida | Consultoría gratuita de 30 minutos |
+| `11-brand-film-9x16.mp4` y `11-brand-film-1080p.mp4` | 45 s, 9:16 y 16:9 | Operación desordenada y a mano | Brand film institucional: AIRIS como el sistema que conecta todo el negocio | Horizontal, 1080p a 24 fps (se puede sacar en 4K); cámara que atraviesa texto, sigue señales por nodos, zooms de descubrimiento, pantalla dividida | Consultoría gratuita de 30 minutos |
 
 Guiones completos: `studio/guiones/`. Código de cada video: `studio/src/videos/`.
 
