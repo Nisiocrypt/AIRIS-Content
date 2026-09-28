@@ -553,11 +553,17 @@ def v11():
     m = np.zeros((2, secs(dur) + SR))
     c = Cues(dur)
 
-    def add(name, f24, gain, off=0.0, length=None):
-        c.add(k(name, length), f24 * FPS / 24, gain, offset_s=off, semitones=0)
+    def add(name, f24, gain, off=0.0, length=None, st=0.0):
+        c.add(k(name, length), f24 * FPS / 24, gain, offset_s=off, semitones=st)
+
+    rnd = np.random.default_rng(11)
+
+    def click(name, f24, gain, st=0.0):
+        """Clic con variación leve de tono y volumen para que nunca suene idéntico."""
+        add(name, f24, gain * (0.85 + 0.3 * rnd.random()), st=st + rnd.uniform(-1, 1))
 
     # 01 caos
-    add("click", 0, 0.35)
+    click("click_panel", 0, 0.35)
     add("swoosh", 6, 0.25)
     add("whoosh_deep", 24, 0.5)
     for i in range(8):
@@ -566,8 +572,8 @@ def v11():
     add("drum_hit", V["signal"], 0.7, length=1.2)
     # 02 la señal: un clic por bloque que se conecta
     s = V["signal"]
-    for i in range(5):
-        add("click", s + 10 + i * 10, 0.45)
+    for i, name in enumerate(["click_select", "click_option", "click_ui", "click_select", "click_option"]):
+        click(name, s + 10 + i * 10, 0.45)
     add("swoosh", s + 58, 0.25)
     add("riser_short", s + 96, 0.35, off=-0.86)
     # 03 el sistema
@@ -576,7 +582,8 @@ def v11():
     add("pop", y + 26, 0.4)
     add("swoosh", y + 40, 0.22)
     for i in range(5):
-        add("click", y + 64 + i * 8, 0.45)
+        # escalera: cada paso un poco más agudo que el anterior
+        add("click_melodic", y + 64 + i * 8, 0.4, st=[-4, -2, 0, 1, 3][i])
     add("confirm", y + 100, 0.3)
     add("swoosh", y + 112, 0.25)
     add("bass_hit", y + 126, 0.55)
@@ -584,13 +591,13 @@ def v11():
     # 04 el motor: clic por nodo
     e = V["engine"]
     for i in range(7):
-        add("click", e + 14 + i * 13 + 8, 0.4)
+        click("click_panel" if i % 2 == 0 else "click", e + 14 + i * 13 + 8, 0.4)
     add("whoosh_deep", e + 110, 0.45)
     add("swoosh", e + 126, 0.22)
     # 05 escala
     sc = V["scale"]
     for i in range(10):
-        add("click", sc + 8 + i * 4.5, 0.2)
+        click("click_tick", sc + 8 + i * 4.5, 0.18, st=-2 + i * 0.3)
     add("whoosh_deep", sc + 54, 0.4)
     add("swoosh", sc + 86, 0.22)
     add("swoosh", sc + 110, 0.22)
@@ -600,7 +607,7 @@ def v11():
     sp = V["split"]
     add("bass_hit", sp, 0.45)
     for i in range(7):
-        add("click", sp + 14 + i * 12, 0.2)
+        click("click_tap", sp + 14 + i * 12, 0.25)
     add("whoosh_deep", sp + 40, 0.4)
     add("swoosh", sp + 44, 0.2)
     add("swoosh", sp + 82, 0.2)
@@ -608,11 +615,11 @@ def v11():
     ag = V["agent"]
     add("pop", ag + 6, 0.45)
     for i in range(6):
-        add("click", ag + 16 + i * 4, 0.25)
+        click(["click_select", "click_option", "click_ui"][i % 3], ag + 16 + i * 4, 0.28)
     add("swoosh", ag + 46, 0.3)
     add("pop", ag + 64, 0.45)
     for i in range(3):
-        add("click", ag + 76 + i * 7, 0.35)
+        add("click_melodic", ag + 76 + i * 7, 0.35, st=[-2, 0, 2][i])
     add("confirm", ag + 92, 0.3)
     add("swoosh", ag + 102, 0.22)
     add("swoosh", ag + 128, 0.22)
@@ -621,8 +628,8 @@ def v11():
     fi = V["finale"]
     add("riser", fi + 70, 0.4, off=-1.8)
     add("logo_hit", fi + 70, 0.85)
-    add("click", fi + 112, 0.3)
-    add("click", fi + 118, 0.3)
+    click("click_ui", fi + 112, 0.3)
+    click("click", fi + 118, 0.3)
     return m, c.bus, dur, 0.5
 
 

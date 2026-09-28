@@ -9,5 +9,12 @@
   "riser_short": {"id": 792, "title": "Cinematic fast raiser"},
   "riser": {"id": 790, "title": "Cinematic trailer riser"},
   "logo_hit": {"id": 2900, "title": "Movie logo intro impact"},
-  "bass_switch": {"id": 2301, "title": "Quick bass switch"}
+  "bass_switch": {"id": 2301, "title": "Quick bass switch"},
+  "click_select": {"id": 1109, "title": "Select click"},
+  "click_option": {"id": 2573, "title": "Interface option select"},
+  "click_ui": {"id": 1126, "title": "Interface click"},
+  "click_melodic": {"id": 1129, "title": "Click melodic tone"},
+  "click_panel": {"id": 2578, "title": "Opening software interface"},
+  "click_tick": {"id": 2568, "title": "Cool interface click tone"},
+  "click_tap": {"id": 2569, "title": "Negative tone interface tap"}
 }
