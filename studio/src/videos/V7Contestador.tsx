@@ -48,12 +48,12 @@ export const V7Contestador: React.FC = () => {
             <Headline lines={["AIRIS, sí."]} start={V7.cut} exitAt={V7.ring - 6} y={900} size={170} inDur={10} stagger={0} />
             <Center y={880}>
               {frame < V7.pickup ? (
-                <CallCard status="incoming" statusText="Llamada entrante · 21:40" start={V7.ring} exitAt={V7.pickup - 4} ring={[V7.ring + 2, V7.pickup - 6]} />
+                <CallCard status="incoming" statusText="Llamada entrante · 21:40" start={V7.ring} exitAt={V7.pickup - 10} ring={[V7.ring + 2, V7.pickup - 10]} />
               ) : null}
             </Center>
             <Center y={880}>
               {frame >= V7.pickup - 2 ? (
-                <CallCard status="active" statusText="En llamada" start={V7.pickup} exitAt={V7.result - 4} energy={voice} footer="Atiende el asistente virtual" />
+                <CallCard status="active" statusText="En llamada" start={V7.pickup} exitAt={V7.result - 12} energy={voice} footer="Atiende el asistente virtual" />
               ) : null}
             </Center>
             <Center y={880}>
