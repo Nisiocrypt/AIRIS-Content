@@ -345,8 +345,8 @@ const SystemScene: React.FC = () => {
   const pulseCore = interpolate(f, [54, 58, 70], [0, 1, 0], CLAMP);
   const collapse = interpolate(f, [100, 110], [0, 1], { ...CLAMP, easing: EASE_IN });
   // el "5" gigante: la cámara lo atraviesa
-  const five = enter(f, 126, 8);
-  const through = interpolate(f, [134, 148], [1, 30], { ...CLAMP, easing: EASE_IN });
+  const five = enter(f, 130, 6);
+  const through = interpolate(f, [136, 148], [1, 30], { ...CLAMP, easing: EASE_IN });
   return (
     <AbsoluteFill style={{ background: "#010104" }}>
       <NightBackground intensity={0.7} glowY={0.5} />
@@ -416,15 +416,15 @@ const SystemScene: React.FC = () => {
         </div>
       ) : null}
       {f >= 104 && f < 116 ? <div style={{ position: "absolute", left: CX - 350 * (1 - interpolate(f, [108, 116], [0, 1], CLAMP)), top: CY, width: 700 * (1 - interpolate(f, [108, 116], [0, 1], CLAMP)), height: 2, background: VIOLET, boxShadow: `0 0 12px ${VIOLET}` }} /> : null}
-      <Headline lines={["Un mensaje."]} start={112} exitAt={124} y={CY} size={110} maxWidth={1400} inDur={10} stagger={0} />
-      {f >= 124 ? (
+      <Headline lines={["Un mensaje."]} start={110} exitAt={118} y={CY} size={110} maxWidth={1400} inDur={10} stagger={0} />
+      {f >= 130 ? (
         <AbsoluteFill style={{ opacity: five * interpolate(through, [8, 30], [1, 0], CLAMP), transformOrigin: `${CX + 10}px ${CY - 10}px`, scale: String(through) }}>
           <T size={560} y={CY - 440} weight={900} font={FONTS.display}>
             5
           </T>
         </AbsoluteFill>
       ) : null}
-      {f >= 124 ? <Headline lines={["tareas resueltas."]} start={128} exitAt={136} y={930} size={56} maxWidth={1200} inDur={8} /> : null}
+      {f >= 130 ? <Headline lines={["tareas resueltas."]} start={131} exitAt={137} y={930} size={56} maxWidth={1200} inDur={8} /> : null}
     </AbsoluteFill>
   );
 };
@@ -709,7 +709,8 @@ const Morph: React.FC<{ from: string; to: string; at: number; y: number; size: n
   const f = useCurrentFrame();
   const letters = (s: string, out: boolean) =>
     s.split("").map((ch, i) => {
-      const t = interpolate(f, [at + i * 1.2, at + i * 1.2 + 8], [0, 1], { ...CLAMP, easing: EASE_IN_OUT });
+      const s0 = at + i * 1.2 + (out ? 0 : 10);
+      const t = interpolate(f, [s0, s0 + 8], [0, 1], { ...CLAMP, easing: EASE_IN_OUT });
       const v = out ? 1 - t : t;
       return (
         <span key={i} style={{ display: "inline-block", opacity: v, translate: `0 ${(out ? -t : 1 - t) * size * 0.35}px`, filter: `blur(${(1 - v) * 8}px)`, whiteSpace: "pre" }}>
@@ -840,7 +841,7 @@ const Agent: React.FC = () => {
   const f = useCurrentFrame();
   const o = enter(f, 0, 10) * leave(f, 98, 10);
   const scanX = interpolate(f, [46, 60], [180, 1740], { ...CLAMP, easing: EASE_IN_OUT });
-  const through = interpolate(f, [136, 152], [1, 14], { ...CLAMP, easing: EASE_IN });
+  const through = interpolate(f, [140, 150], [1, 14], { ...CLAMP, easing: EASE_IN });
   const chips = ["Agenda actualizada", "Ficha actualizada", "Confirmación enviada"];
   return (
     <AbsoluteFill style={{ background: "#010104" }}>
@@ -906,9 +907,9 @@ const Agent: React.FC = () => {
           </div>
         </div>
       </AbsoluteFill>
-      <Headline lines={["No es un chatbot."]} start={104} exitAt={120} y={CY} size={96} maxWidth={1400} inDur={10} stagger={0} />
+      <Headline lines={["No es un chatbot."]} start={102} exitAt={114} y={CY} size={96} maxWidth={1400} inDur={10} stagger={0} />
       <AbsoluteFill style={{ transformOrigin: `${CX + 170}px ${CY + 60}px`, scale: String(through), opacity: interpolate(through, [4, 14], [1, 0], CLAMP) }}>
-        <Headline lines={["Es un sistema que", { text: "resuelve.", italic: true }]} start={122} y={CY} size={96} maxWidth={1400} inDur={10} />
+        <Headline lines={["Es un sistema que", { text: "resuelve.", italic: true }]} start={128} y={CY} size={96} maxWidth={1400} inDur={10} />
       </AbsoluteFill>
     </AbsoluteFill>
   );
