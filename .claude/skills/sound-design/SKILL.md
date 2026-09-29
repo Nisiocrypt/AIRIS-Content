@@ -94,6 +94,24 @@ los tiempos de los `.tsx`). Reglas que salieron de la primera tanda:
 - Validar sin escuchar con `audio/inspect_mix.py` (espectrograma + envolvente) y
   `audio/overview.py`; igual conviene que una persona lo escuche antes de publicar.
 
+## Edición al ritmo (lo que hace que un video "pegue")
+
+Aprendido comparando con un showreel de referencia (15 s, 120 BPM, 71% de la energía en
+graves, golpes cada medio segundo, redoble acelerado antes del logo):
+- **Primero el pulso, después la edición.** Detectar BPM y fase del bombo del tema (no de
+  todo el audio: filtrar por debajo de 150 Hz; el bombo marca el compás, los múltiplos de
+  4 son tiempo fuerte). Error típico: tomar la fase del flujo espectral general, que se
+  corre por los platillos.
+- Cortes de escena en golpes; los cambios grandes en tiempo fuerte. Animaciones en serie
+  (bloques, pasos, nodos) en corcheas o con síncopa de 1,5 tiempos. En código: `bf(k)` da
+  el frame del golpe k (ver `V11BrandFilm.tsx`).
+- **Golpes en capas:** sub grave sintetizado (70 → 36 Hz) + transiente grabado + aire.
+  Los clics quedan para detalles chicos y más bajos.
+- **Dinámica:** arranque casi en silencio, picos en 3 o 4 cambios de sección, redoble que
+  se acelera antes del logo con la imagen acelerando igual (destellos, pulsos).
+- La música "bombea": se baja 6 a 7 dB en cada golpe y vuelve en unos 300 ms.
+- La cámara late: empujón de escala chico en cada golpe, más fuerte en tiempo fuerte.
+
 ## Mezcla y master (FFmpeg)
 
 - Voz ≈ -16 LUFS; master final -14 LUFS integrados, true peak ≤ -1 dBTP.

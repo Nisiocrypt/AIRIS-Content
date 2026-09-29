@@ -19,16 +19,27 @@ export const V11_H = 1080;
 export const V11_DURATION = 1080;
 
 /** Inicio de cada escena (frames a 24 fps). */
+/**
+ * Grilla musical de Machine Drum Vibes: 146 BPM, primer tiempo a los 0,048 s (el bombo marca el compás: los múltiplos de 4 son tiempo fuerte). Todo corte y
+ * toda animación importante cae en un golpe: bf(k) es el frame del golpe número k.
+ */
+export const BPM = 146;
+export const BEAT = (24 * 60) / BPM;
+export const PHASE = 0.048 * 24;
+export const bf = (k: number) => Math.round(PHASE + k * BEAT);
+
 export const V11 = {
   chaos: 0,
-  signal: 96,
-  system: 192,
-  engine: 336,
-  scale: 480,
-  split: 630,
-  agent: 750,
-  finale: 900,
+  signal: bf(10),
+  system: bf(20),
+  engine: bf(34),
+  scale: bf(48),
+  split: bf(64),
+  agent: bf(76),
+  finale: bf(90),
 };
+/** Frame local de un golpe dentro de una escena. */
+const lb = (k: number, scene: number) => bf(k) - scene;
 
 const VIOLET = COLORS.violet;
 const AMBER = "#F5B544";
@@ -301,7 +312,10 @@ const Signal: React.FC = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [L.v]);
   const dot = enter(f, 2, 8);
-  const prog = interpolate(f, [8, 62], [0, path.total], { ...CLAMP, easing: EASE_IN_OUT });
+  // la señal llega a cada bloque justo en un golpe (tiempos 11 a 15)
+  const keysF = [0, ...[11, 12, 13, 14, 15].map((k) => lb(k, V11.signal)), lb(16, V11.signal)];
+  const keysL = [0, ...path.idx.map((ix) => path.lenAt(ix)), path.total];
+  const prog = interpolate(f, keysF, keysL, CLAMP);
   const [hx, hy] = path.pointAt(prog);
   const shake = interpolate(f, [0, 34], [1, 0], CLAMP);
   const camX = Math.sin(f * 0.37) * 9 * shake;
@@ -353,7 +367,7 @@ const Signal: React.FC = () => {
           );
         })}
       </AbsoluteFill>
-      <Head h={["¿Y si todo trabajara", { text: "junto?", italic: true }]} start={58} exitAt={92} y={headY} yv={headY} size={64} sizeV={84} inDur={14} />
+      <Head h={["¿Y si todo trabajara", { text: "junto?", italic: true }]} start={lb(16, V11.signal)} exitAt={lb(19, V11.signal)} y={headY} yv={headY} size={64} sizeV={84} inDur={14} />
       {f >= 86
         ? Array.from({ length: 7 }).map((_, i) => {
             const [tx, ty] = nodePos(L, i, 0);
@@ -388,14 +402,14 @@ const SystemScene: React.FC = () => {
   const L = useL();
   const { CX, CY } = L;
   const draw = interpolate(f, [0, 24], [0, 1], { ...CLAMP, easing: EASE_OUT });
-  const dim = interpolate(f, [54, 62, 104, 112], [1, 0.18, 0.18, 0], CLAMP);
-  const coreO = interpolate(f, [104, 114], [1, 0], CLAMP);
+  const dim = interpolate(f, [54, 62, 94, 102], [1, 0.18, 0.18, 0], CLAMP);
+  const coreO = interpolate(f, [94, 104], [1, 0], CLAMP);
   const msgT = interpolate(f, [40, 54], [0, 1], { ...CLAMP, easing: EASE_IN });
   const wa = nodePos(L, 0, f);
   const pulseCore = interpolate(f, [54, 58, 70], [0, 1, 0], CLAMP);
-  const collapse = interpolate(f, [100, 110], [0, 1], { ...CLAMP, easing: EASE_IN });
-  const five = enter(f, 130, 6);
-  const through = interpolate(f, [136, 148], [1, 30], { ...CLAMP, easing: EASE_IN });
+  const collapse = interpolate(f, [90, 98], [0, 1], { ...CLAMP, easing: EASE_IN });
+  const five = enter(f, lb(33, V11.system), 4);
+  const through = interpolate(f, [lb(33.5, V11.system) + 3, lb(34, V11.system) + 4], [1, 30], { ...CLAMP, easing: EASE_IN });
   const fiveSize = L.v ? 640 : 560;
   return (
     <AbsoluteFill style={{ background: "#010104" }}>
@@ -445,11 +459,12 @@ const SystemScene: React.FC = () => {
           <WABubble text="Hola, quiero sacar un turno." time="09:14" start={26} fontSize={30} maxWidth={520} />
         </div>
       ) : null}
-      {f >= 54 && f < 112 ? (
+      {f >= 54 && f < 100 ? (
         <div style={{ position: "absolute", left: CX, top: CY, translate: "-50% -50%", display: "flex", flexDirection: "column", gap: 14, scale: `${L.v ? 1.35 : 1} ${(1 - collapse) * (L.v ? 1.35 : 1)}`, opacity: 1 - collapse * 0.5 }}>
           {STEPS.map((s, i) => {
             const p = enter(f, 56 + i * 4, 10);
-            const lit = interpolate(f, [64 + i * 8, 70 + i * 8], [0, 1], CLAMP);
+            const at = lb(26.5 + i * 0.5, V11.system);
+            const lit = interpolate(f, [at, at + 4], [0, 1], CLAMP);
             return (
               <div key={s} style={{ ...glass, width: 560, padding: "16px 24px", display: "flex", alignItems: "center", gap: 18, opacity: p, translate: `0 ${(1 - p) * 16}px`, border: `1px solid rgba(167,139,250,${0.12 + 0.6 * lit})`, boxShadow: `0 0 ${24 * lit}px rgba(124,58,237,${0.45 * lit})` }}>
                 <div style={{ width: 36, height: 36, borderRadius: 99, background: lit > 0.5 ? VIOLET : "rgba(255,255,255,0.1)", display: "flex", alignItems: "center", justifyContent: "center", fontFamily: FONTS.body, fontWeight: 600, fontSize: 18, color: "#FFFFFF" }}>
@@ -462,18 +477,18 @@ const SystemScene: React.FC = () => {
           })}
         </div>
       ) : null}
-      {f >= 104 && f < 116 ? (
-        <div style={{ position: "absolute", left: CX - 350 * (1 - interpolate(f, [108, 116], [0, 1], CLAMP)), top: CY, width: 700 * (1 - interpolate(f, [108, 116], [0, 1], CLAMP)), height: 2, background: VIOLET, boxShadow: `0 0 12px ${VIOLET}` }} />
+      {f >= 94 && f < 106 ? (
+        <div style={{ position: "absolute", left: CX - 350 * (1 - interpolate(f, [98, 106], [0, 1], CLAMP)), top: CY, width: 700 * (1 - interpolate(f, [98, 106], [0, 1], CLAMP)), height: 2, background: VIOLET, boxShadow: `0 0 12px ${VIOLET}` }} />
       ) : null}
-      <Head h={["Un mensaje."]} start={110} exitAt={118} y={540} yv={960} size={110} sizeV={120} inDur={10} stagger={0} />
-      {f >= 130 ? (
+      <Head h={["Un mensaje."]} start={lb(30.5, V11.system)} exitAt={lb(32, V11.system) - 6} y={540} yv={960} size={110} sizeV={120} inDur={10} stagger={0} />
+      {f >= lb(33, V11.system) ? (
         <AbsoluteFill style={{ opacity: five * interpolate(through, [8, 30], [1, 0], CLAMP), transformOrigin: `${CX + 10}px ${CY - 10}px`, scale: String(through) }}>
           <T size={fiveSize} y={CY - fiveSize * 0.78} weight={900} font={FONTS.display}>
             5
           </T>
         </AbsoluteFill>
       ) : null}
-      {f >= 130 ? <Head h={["tareas resueltas."]} start={131} exitAt={137} y={930} yv={1400} size={56} sizeV={72} inDur={8} /> : null}
+      {f >= lb(33, V11.system) ? <Head h={["tareas resueltas."]} start={lb(33, V11.system) + 1} exitAt={lb(33.5, V11.system) + 4} y={930} yv={1400} size={56} sizeV={72} inDur={8} /> : null}
     </AbsoluteFill>
   );
 };
@@ -489,7 +504,8 @@ const FLOW: { name: string; busy: string; done: string }[] = [
   { name: "Actualiza la ficha", busy: "Completando", done: "Ficha al 100%" },
   { name: "Avisa al equipo", busy: "Enviando", done: "Equipo avisado" },
 ];
-const HIT = (i: number) => 14 + i * 13;
+/** Cada nodo se completa en un golpe, con ritmo de 1,5 tiempos (síncopa). */
+const HIT = (i: number) => lb(35.5 + i * 1.5, V11.engine);
 const OFFS = [0, -1, 1, -1, 1, -1, 0];
 
 const Engine: React.FC = () => {
@@ -703,7 +719,7 @@ const ScaleScene: React.FC = () => {
   const tangleIn = interpolate(f, [110, 120], [0, 1], CLAMP);
   const lx0 = L.v ? 90 : 200;
   const lx1 = L.v ? 990 : 1720;
-  const sigX = interpolate(f, [122, 140], [lx0, lx1], { ...CLAMP, easing: EASE_IN_OUT });
+  const sigX = interpolate(f, [lb(60, V11.scale), lb(62, V11.scale)], [lx0, lx1], { ...CLAMP, easing: EASE_IN_OUT });
   const ly = L.v ? 1180 : 700;
   return (
     <AbsoluteFill style={{ background: "#010104" }}>
@@ -734,8 +750,8 @@ const ScaleScene: React.FC = () => {
           Datos de ejemplo
         </T>
       ) : null}
-      <Head h={["La automatización no reemplaza tu negocio."]} v={["La automatización", "no reemplaza", "tu negocio."]} start={86} exitAt={98} y={540} yv={960} size={68} sizeV={92} inDur={12} />
-      <Head h={["Le saca lo que lo", { text: "frena.", italic: true }]} start={110} y={440} yv={760} size={80} sizeV={96} inDur={12} />
+      <Head h={["La automatización no reemplaza tu negocio."]} v={["La automatización", "no reemplaza", "tu negocio."]} start={lb(57, V11.scale)} exitAt={lb(58, V11.scale) + 2} y={540} yv={960} size={68} sizeV={92} inDur={12} />
+      <Head h={["Le saca lo que lo", { text: "frena.", italic: true }]} start={lb(59, V11.scale)} y={440} yv={760} size={80} sizeV={96} inDur={12} />
       {f >= 110 ? (
         <svg width={L.W} height={L.H} style={{ position: "absolute", inset: 0 }}>
           {Array.from({ length: 7 }).map((_, k) => {
@@ -748,7 +764,7 @@ const ScaleScene: React.FC = () => {
             }).join(" ");
             return <polyline key={k} points={pts} fill="none" stroke={sigX > lx1 - 20 ? VIOLET : "rgba(255,255,255,0.55)"} strokeWidth={1.5} opacity={tangleIn} />;
           })}
-          {f >= 122 && f < 142 ? <circle cx={sigX} cy={ly + 78} r={8} fill="#FFFFFF" style={{ filter: "drop-shadow(0 0 14px #7C3AED)" }} /> : null}
+          {f >= lb(60, V11.scale) && f < lb(62, V11.scale) + 2 ? <circle cx={sigX} cy={ly + 78} r={8} fill="#FFFFFF" style={{ filter: "drop-shadow(0 0 14px #7C3AED)" }} /> : null}
         </svg>
       ) : null}
     </AbsoluteFill>
@@ -896,8 +912,8 @@ const Split: React.FC = () => {
       ) : (
         <div style={{ position: "absolute", left: div - 1, top: 0, width: 2, height: L.H, background: "linear-gradient(transparent, rgba(255,255,255,0.8), transparent)" }} />
       )}
-      <Morph from="A mano" to="Automático" at={44} y={v ? 150 : 80} size={v ? 88 : 72} show={enter(f, 6, 10)} />
-      <Morph from="Por separado" to="Conectado" at={72} y={v ? 1740 : 900} size={v ? 88 : 72} show={enter(f, 12, 10)} />
+      <Morph from="A mano" to="Automático" at={lb(68, V11.split) - 10} y={v ? 150 : 80} size={v ? 88 : 72} show={enter(f, 6, 10)} />
+      <Morph from="Por separado" to="Conectado" at={lb(71, V11.split) - 10} y={v ? 1740 : 900} size={v ? 88 : 72} show={enter(f, 12, 10)} />
     </AbsoluteFill>
   );
 };
@@ -910,9 +926,9 @@ const Agent: React.FC = () => {
   const f = useCurrentFrame();
   const L = useL();
   const v = L.v;
-  const o = enter(f, 0, 10) * leave(f, 88, 10);
+  const o = enter(f, 0, 10) * leave(f, lb(84.5, V11.agent), 8);
   const scan = interpolate(f, [46, 60], v ? [120, 1800] : [180, 1740], { ...CLAMP, easing: EASE_IN_OUT });
-  const through = interpolate(f, [138, 150], [1, 14], { ...CLAMP, easing: EASE_IN });
+  const through = interpolate(f, [lb(89.5, V11.agent), lb(90.5, V11.agent)], [1, 14], { ...CLAMP, easing: EASE_IN });
   const chips = ["Agenda actualizada", "Ficha actualizada", "Confirmación enviada"];
   const panel = v ? { x: L.CX - 360, y: 560, w: 720, h: 800 } : { x: L.CX - 330, y: 170, w: 660, h: 720 };
   const target = (i: number): [number, number] => {
@@ -999,15 +1015,18 @@ const Agent: React.FC = () => {
           </div>
         </div>
       </AbsoluteFill>
-      <Head h={["No es un chatbot."]} v={["No es", "un chatbot."]} start={92} exitAt={104} y={540} yv={960} size={96} sizeV={112} inDur={10} stagger={0} />
+      <Head h={["No es un chatbot."]} v={["No es", "un chatbot."]} start={lb(85, V11.agent)} exitAt={lb(86, V11.agent) + 2} y={540} yv={960} size={96} sizeV={112} inDur={10} stagger={0} />
       <AbsoluteFill style={{ transformOrigin: `${L.CX + (v ? 60 : 170)}px ${L.CY + (v ? 120 : 60)}px`, scale: String(through), opacity: interpolate(through, [4, 14], [1, 0], CLAMP) }}>
-        <Head h={["Es un sistema que", { text: "resuelve.", italic: true }]} v={["Es un sistema", "que", { text: "resuelve.", italic: true }]} start={114} y={540} yv={960} size={96} sizeV={112} inDur={10} />
+        <Head h={["Es un sistema que", { text: "resuelve.", italic: true }]} v={["Es un sistema", "que", { text: "resuelve.", italic: true }]} start={lb(87, V11.agent)} y={540} yv={960} size={96} sizeV={112} inDur={10} />
       </AbsoluteFill>
     </AbsoluteFill>
   );
 };
 
 // ================================================================== 08 · FINAL
+
+/** Golpes del redoble antes del logo (se aceleran). */
+export const ROLL = [92, 93, 94, 94.5, 95, 95.25, 95.5, 95.75];
 
 const MODULES = ["Ventas", "Atención", "Operaciones", "Fichas de clientes", "WhatsApp", "Llamadas", "Turnos", "Cobros"];
 
@@ -1017,16 +1036,20 @@ const Finale: React.FC = () => {
   const { CX, CY } = L;
   const rx = L.v ? 360 : 700;
   const ry = L.v ? 680 : 360;
-  const ui = interpolate(f, [36, 52], [1, 0], CLAMP);
-  const conv = interpolate(f, [44, 70], [0, 1], { ...CLAMP, easing: EASE_IN_OUT });
-  const hit = interpolate(f, [70, 74, 110], [0, 1, 0], CLAMP);
-  const lines = interpolate(f, [66, 76], [1, 0], CLAMP);
+  const ui = interpolate(f, [lb(94, V11.finale), lb(95.5, V11.finale)], [1, 0], CLAMP);
+  const LOGO = lb(96, V11.finale);
+  const conv = interpolate(f, [lb(92, V11.finale), LOGO], [0, 1], { ...CLAMP, easing: EASE_IN });
+  const hit = interpolate(f, [LOGO, LOGO + 3, LOGO + 40], [0, 1, 0], CLAMP);
+  const lines = interpolate(f, [LOGO - 4, LOGO + 4], [1, 0], CLAMP);
+  // redoble: destellos que se aceleran hasta el logo
+  const roll = ROLL.map((k) => lb(k, V11.finale));
+  const strobe = Math.max(0, ...roll.map((r) => (f >= r ? Math.exp(-(f - r) / 2.2) : 0)));
   const fade = interpolate(f, [160, 178], [1, 0], CLAMP);
   const wide = interpolate(f, [0, 40], [1.12, 1], { ...CLAMP, easing: EASE_OUT });
   const logoW = L.v ? 640 : 620;
   return (
     <AbsoluteFill style={{ background: "#010104", opacity: fade }}>
-      <NightBackground intensity={0.8 + 0.6 * hit} glowY={0.46} />
+      <NightBackground intensity={0.8 + 0.6 * hit + 0.5 * strobe} glowY={0.46} />
       <LightStrands width={L.W} height={L.H} opacity={0.15 + 0.5 * hit} energy={0.6 + hit} centerY={0.55} speed={0.6} />
       <AbsoluteFill style={{ scale: String(wide) }}>
         <svg width={L.W} height={L.H} style={{ position: "absolute", inset: 0, opacity: lines }}>
@@ -1052,7 +1075,7 @@ const Finale: React.FC = () => {
           const x = CX + Math.cos(a) * rx;
           const y = CY + Math.sin(a) * ry;
           return (
-            <div key={m} style={{ position: "absolute", left: x, top: y, translate: "-50% -50%", opacity: ui * enter(f, i * 2, 10), ...glass, borderRadius: 999, padding: "12px 24px", fontFamily: FONTS.body, fontWeight: 600, fontSize: L.v ? 26 : 22, color: "#FFFFFF", display: "flex", alignItems: "center", gap: 10 }}>
+            <div key={m} style={{ position: "absolute", left: x, top: y, translate: "-50% -50%", opacity: ui * enter(f, i * 2, 10), scale: String(1 + 0.08 * strobe), ...glass, borderRadius: 999, padding: "12px 24px", fontFamily: FONTS.body, fontWeight: 600, fontSize: L.v ? 26 : 22, color: "#FFFFFF", display: "flex", alignItems: "center", gap: 10 }}>
               <div style={{ width: 9, height: 9, borderRadius: 9, background: CYAN, opacity: 0.5 + 0.5 * Math.abs(Math.sin(f * 0.25 + i)) }} />
               {m}
             </div>
@@ -1061,14 +1084,14 @@ const Finale: React.FC = () => {
       </AbsoluteFill>
       {f >= 64 ? (
         <div style={{ position: "absolute", left: CX, top: CY - (L.v ? 120 : 70), translate: "-50% -50%", scale: String(1 + 0.03 * hit) }}>
-          <Logo width={logoW} start={66} stagger={3} glow />
+          <Logo width={logoW} start={LOGO - 3} stagger={2} glow />
         </div>
       ) : null}
-      <Head h={["Un mensaje entra.", { text: "La operación continúa.", italic: true }]} start={86} y={710} yv={1130} size={46} sizeV={58} inDur={14} stagger={6} />
-      <T size={L.v ? 32 : 26} y={L.v ? 1290 : 840} opacity={enter(f, 112, 14) * 0.8} weight={500}>
+      <Head h={["Un mensaje entra.", { text: "La operación continúa.", italic: true }]} start={lb(98, V11.finale)} y={710} yv={1130} size={46} sizeV={58} inDur={14} stagger={6} />
+      <T size={L.v ? 32 : 26} y={L.v ? 1290 : 840} opacity={enter(f, lb(100, V11.finale), 12) * 0.8} weight={500}>
         Consultoría gratuita de 30 minutos
       </T>
-      <T size={L.v ? 36 : 30} y={L.v ? 1345 : 886} opacity={enter(f, 118, 14)} weight={600}>
+      <T size={L.v ? 36 : 30} y={L.v ? 1345 : 886} opacity={enter(f, lb(101, V11.finale), 12)} weight={600}>
         airisautomation.com
       </T>
     </AbsoluteFill>
@@ -1077,16 +1100,35 @@ const Finale: React.FC = () => {
 
 // ================================================================== film
 
+/** Tiempos fuertes con golpe grande: destello corto. */
+export const BIG = [10, 34, 64, 96];
+export const MID = [20, 33, 48, 76, 90];
+
 const SweepFlash: React.FC = () => {
   const f = useCurrentFrame();
-  const at = [V11.system, V11.engine, V11.split, V11.finale];
-  const v = Math.max(...at.map((a) => interpolate(f, [a - 2, a, a + 8], [0, 0.18, 0], CLAMP)));
+  const v = Math.max(
+    ...BIG.map((k) => interpolate(f, [bf(k) - 1, bf(k), bf(k) + 9], [0, 0.26, 0], CLAMP)),
+    ...MID.map((k) => interpolate(f, [bf(k) - 1, bf(k), bf(k) + 6], [0, 0.12, 0], CLAMP)),
+  );
   return <AbsoluteFill style={{ background: "#FFFFFF", mixBlendMode: "soft-light", opacity: v, pointerEvents: "none" }} />;
+};
+
+/** La cámara late con la música: empujón en cada golpe, más fuerte en el primer tiempo. */
+const BeatPunch: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const f = useCurrentFrame();
+  const k = Math.floor((f - PHASE) / BEAT + 0.02);
+  const since = f - (PHASE + k * BEAT);
+  const on = f >= V11.system && f < bf(96) + 30;
+  const big = BIG.includes(k) ? 0.035 : 0;
+  const amp = on ? (k % 4 === 0 ? 0.014 : 0.006) + big : big;
+  const s = 1 + amp * Math.exp(-Math.max(0, since) / 3.2);
+  return <AbsoluteFill style={{ scale: String(s) }}>{children}</AbsoluteFill>;
 };
 
 export const V11BrandFilm: React.FC<{ vertical?: boolean }> = ({ vertical = false }) => (
   <Ctx.Provider value={vertical ? L9 : L16}>
     <AbsoluteFill style={{ background: "#010104" }}>
+      <BeatPunch>
       <Sequence from={V11.chaos} durationInFrames={V11.signal - V11.chaos}>
         <Chaos />
       </Sequence>
@@ -1111,6 +1153,7 @@ export const V11BrandFilm: React.FC<{ vertical?: boolean }> = ({ vertical = fals
       <Sequence from={V11.finale} durationInFrames={V11_DURATION - V11.finale}>
         <Finale />
       </Sequence>
+      </BeatPunch>
       <Vignette strength={0.45} />
       <Grain opacity={0.05} />
       <SweepFlash />

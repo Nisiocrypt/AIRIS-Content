@@ -544,92 +544,108 @@ def v10():
 
 
 def v11():
-    """Brand film 16:9 a 24 fps con efectos grabados de Mixkit (kit.json)."""
-    from kit import k
+    """Brand film a 24 fps, editado sobre la grilla de Machine Drum Vibes (146 BPM).
+
+    Cada golpe se arma en capas: sub grave sintetizado + transiente grabado de Mixkit +
+    aire. Los clics quedan para los detalles, más bajos. Antes del logo, un redoble que se
+    acelera junto con la imagen.
+    """
+    from kit import k as K
 
     src = (VIDEOS / "V11BrandFilm.tsx").read_text()
-    V = consts("V11BrandFilm.tsx", "V11")
     dur = float(re.search(r"V11_DURATION = (\d+)", src).group(1)) / 24
+    bpm = float(re.search(r"BPM = (\d+)", src).group(1))
+    beat = 60 / bpm
+    phase = 0.048
     m = np.zeros((2, secs(dur) + SR))
     c = Cues(dur)
-
-    def add(name, f24, gain, off=0.0, length=None, st=0.0):
-        c.add(k(name, length), f24 * FPS / 24, gain, offset_s=off, semitones=st)
-
     rnd = np.random.default_rng(11)
 
-    def click(name, f24, gain, st=0.0):
-        """Clic con variación leve de tono y volumen para que nunca suene idéntico."""
-        add(name, f24, gain * (0.85 + 0.3 * rnd.random()), st=st + rnd.uniform(-1, 1))
+    def t_(kb: float) -> float:
+        """Segundo exacto del golpe kb (se redondea al frame, igual que en el video)."""
+        return round((phase + kb * beat) * 24) / 24
 
-    # 01 caos
-    click("click_panel", 0, 0.35)
-    add("swoosh", 6, 0.25)
-    add("whoosh_deep", 24, 0.5)
-    for i in range(8):
-        add("pop", 40 + i * 5, 0.18)
-    add("swoosh", 64, 0.25)
-    add("drum_hit", V["signal"], 0.7, length=1.2)
-    # 02 la señal: un clic por bloque que se conecta
-    s = V["signal"]
-    for i, name in enumerate(["click_select", "click_option", "click_ui", "click_select", "click_option"]):
-        click(name, s + 10 + i * 10, 0.45)
-    add("swoosh", s + 58, 0.25)
-    add("riser_short", s + 96, 0.35, off=-0.86)
-    # 03 el sistema
-    y = V["system"]
-    add("bass_hit", y, 0.55)
-    add("pop", y + 26, 0.4)
-    add("swoosh", y + 40, 0.22)
-    for i in range(5):
-        # escalera: cada paso un poco más agudo que el anterior
-        add("click_melodic", y + 64 + i * 8, 0.4, st=[-4, -2, 0, 1, 3][i])
-    add("confirm", y + 100, 0.3)
-    add("swoosh", y + 112, 0.25)
-    add("bass_hit", y + 126, 0.55)
-    add("whoosh_deep", y + 132, 0.45)
-    # 04 el motor: clic por nodo
-    e = V["engine"]
-    for i in range(7):
-        click("click_panel" if i % 2 == 0 else "click", e + 14 + i * 13 + 8, 0.4)
-    add("whoosh_deep", e + 110, 0.45)
-    add("swoosh", e + 126, 0.22)
-    # 05 escala
-    sc = V["scale"]
-    for i in range(10):
-        click("click_tick", sc + 8 + i * 4.5, 0.18, st=-2 + i * 0.3)
-    add("whoosh_deep", sc + 54, 0.4)
-    add("swoosh", sc + 86, 0.22)
-    add("swoosh", sc + 110, 0.22)
-    add("bass_switch", sc + 122, 0.4)
-    add("confirm", sc + 140, 0.3)
-    # 06 antes y después
-    sp = V["split"]
-    add("bass_hit", sp, 0.45)
-    for i in range(7):
-        click("click_tap", sp + 14 + i * 12, 0.25)
-    add("whoosh_deep", sp + 40, 0.4)
-    add("swoosh", sp + 44, 0.2)
-    add("swoosh", sp + 82, 0.2)
-    # 07 el agente
-    ag = V["agent"]
-    add("pop", ag + 6, 0.45)
+    def put(clip, kb, gain, off=0.0, st=0.0):
+        c.add(clip, t_(kb) * FPS, gain, offset_s=off, semitones=st)
+
+    def sub(length=0.55, f0=72, f1=36):
+        n = secs(length)
+        x = sine(np.linspace(f0, f1, n), length) * adsr(n, 0.002, 0.12, 0.5, 0.3)
+        return stereo(lowpass(x, 160), 0)
+
+    def hit(kb, size="mid"):
+        g = {"small": 0.5, "mid": 0.75, "big": 1.0}[size]
+        put(sub(0.7 if size == "big" else 0.5), kb, 0.9 * g)
+        put(K("drum_hit" if size == "big" else "bass_hit", 1.4), kb, 0.55 * g)
+        if size != "small":
+            put(K("swoosh", 0.8), kb, 0.18 * g, st=-3)
+        if size == "big":
+            put(K("riser_short"), kb, 0.3, off=-0.86)
+
+    def click(name, kb, gain, st=0.0):
+        put(K(name), kb, gain * (0.85 + 0.3 * rnd.random()), st=st + rnd.uniform(-1, 1))
+
+    # 01 caos (el tema todavía casi no suena)
+    put(K("click_panel"), 0, 0.3)
+    put(K("whoosh_deep", 1.2), 2.2, 0.45)
     for i in range(6):
-        click(["click_select", "click_option", "click_ui"][i % 3], ag + 16 + i * 4, 0.28)
-    add("swoosh", ag + 46, 0.3)
-    add("pop", ag + 64, 0.45)
+        click("pop", 3.3 + i * 0.5, 0.14)
+    hit(10, "big")  # corte a la señal
+    # 02 la señal: un clic por bloque, justo cuando la línea lo toca
+    for i, name in enumerate(["click_select", "click_option", "click_ui", "click_select", "click_option"]):
+        click(name, 11 + i, 0.42)
+    hit(20, "mid")  # entra el sistema
+    # 03 el sistema
+    click("pop", 23, 0.35)
+    for i in range(5):  # los cinco pasos en corcheas, en escalera
+        put(K("click_melodic"), 26.5 + i * 0.5, 0.38, st=[-4, -2, 0, 1, 3][i])
+    put(K("confirm"), 28.5, 0.25)
+    hit(30.5, "small")  # "Un mensaje."
+    hit(33, "mid")  # el 5
+    put(K("whoosh_deep", 1.0), 33.5, 0.4)
+    # 04 el motor: nodos en síncopa
+    hit(34, "big")
+    for i in range(7):
+        click("click_panel" if i % 2 == 0 else "click", 35.5 + i * 1.5, 0.4)
+        put(sub(0.25, 60, 45), 35.5 + i * 1.5, 0.35)
+    put(K("whoosh_deep", 1.2), 46, 0.4)
+    # 05 escala: el contador en semicorcheas
+    hit(48, "mid")
+    for i in range(12):
+        click("click_tick", 48.5 + i * 0.5, 0.16, st=-2 + i * 0.25)
+    put(K("whoosh_deep", 1.2), 53.5, 0.35)
+    hit(57, "small")
+    hit(59, "small")
+    put(K("bass_switch"), 60, 0.35)
+    put(K("confirm"), 62, 0.28)
+    # 06 antes y después
+    hit(64, "big")
+    for i in range(8):
+        click("click_tap", 65 + i * 0.75, 0.22)
+    put(K("swoosh", 0.8), 68, 0.22)
+    put(K("swoosh", 0.8), 71, 0.22)
+    # 07 el agente
+    hit(76, "mid")
+    click("pop", 77, 0.4)
+    for i in range(6):
+        click(["click_select", "click_option", "click_ui"][i % 3], 78 + i * 0.5, 0.26)
+    click("pop", 82, 0.42)
     for i in range(3):
-        add("click_melodic", ag + 76 + i * 7, 0.35, st=[-2, 0, 2][i])
-    add("confirm", ag + 86, 0.3)
-    add("swoosh", ag + 92, 0.22)
-    add("swoosh", ag + 114, 0.22)
-    add("whoosh_deep", ag + 136, 0.5)
-    # 08 final: todo converge en el logo
-    fi = V["finale"]
-    add("riser", fi + 70, 0.4, off=-1.8)
-    add("logo_hit", fi + 70, 0.85)
-    click("click_ui", fi + 112, 0.3)
-    click("click", fi + 118, 0.3)
+        put(K("click_melodic"), 83 + i * 0.5, 0.32, st=[-2, 0, 2][i])
+    hit(85, "small")
+    hit(87, "small")
+    hit(90, "mid")  # la cámara atraviesa el texto
+    # 08 final: redoble que se acelera y el logo en el tiempo fuerte 96
+    roll = [92, 93, 94, 94.5, 95, 95.25, 95.5, 95.75]
+    for j, kb in enumerate(roll):
+        g = 0.35 + 0.5 * j / (len(roll) - 1)
+        put(sub(0.3, 70, 50), kb, g)
+        click("click", kb, 0.2 + 0.2 * j / len(roll), st=-3 + j * 0.6)
+    put(K("riser"), 96, 0.45, off=-1.8)
+    put(sub(1.2, 80, 30), 96, 1.0)
+    put(K("logo_hit"), 96, 0.9)
+    click("click_ui", 100, 0.28)
+    click("click", 101, 0.28)
     return m, c.bus, dur, 0.5
 
 
