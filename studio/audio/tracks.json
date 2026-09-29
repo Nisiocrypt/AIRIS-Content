@@ -9,5 +9,6 @@
   "v8": {"file": "mixkit-757-workout-02.mp3", "start": 38.0},
   "v9": {"file": "mixkit-517-jungle-voices.mp3", "start": 29.5, "note": "entra en el giro, justo en la subida"},
   "v10": {"file": "mixkit-117-machine-drum-vibes.mp3", "start": 34.0, "note": "entra en la calma, con el tema ya arriba"},
-  "v11": {"file": "mixkit-117-machine-drum-vibes.mp3", "start": 0.0, "fade_out": 2.0, "gain_db": -1.5, "duck_db": 7.0, "note": "146 BPM; el video está editado sobre este pulso, arranca en 0 para no correrlo"}
+  "v11": {"file": "mixkit-117-machine-drum-vibes.mp3", "start": 0.0, "fade_out": 2.0, "gain_db": -1.5, "duck_db": 7.0, "note": "146 BPM; el video está editado sobre este pulso, arranca en 0 para no correrlo"},
+  "v12": {"file": "mixkit-117-machine-drum-vibes.mp3", "start": 36.212, "enter_s": 1.644, "fade_in": 0.02, "fade_out": 1.2, "gain_db": -1.5, "duck_db": 7.0, "note": "entra con la cuenta regresiva, en el tiempo fuerte 88 del tema"}
 }

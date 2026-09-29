@@ -649,7 +649,93 @@ def v11():
     return m, c.bus, dur, 0.5
 
 
-BUILDERS = {"v1": v1, "v2": v2, "v3": v3, "v4": v4, "v5": v5, "v6": v6, "v7": v7, "v8": v8, "v9": v9, "v10": v10, "v11": v11}
+def v12():
+    """Showreel 9:16 a 24 fps, un corte por golpe (146 BPM). La música entra con el 3."""
+    from kit import k as K
+
+    src = (VIDEOS / "V12Showreel.tsx").read_text()
+    bpm = float(re.search(r"V12_BPM = (\d+)", src).group(1))
+    beat = 60 / bpm
+    dur = round(47 * beat * 24) / 24
+    m = np.zeros((2, secs(dur) + SR))
+    c = Cues(dur)
+    rnd = np.random.default_rng(12)
+
+    def t_(kb):
+        return round(kb * beat * 24) / 24
+
+    def put(clip, kb, gain, off=0.0, st=0.0):
+        c.add(clip, t_(kb) * FPS, gain, offset_s=off, semitones=st)
+
+    def sub(length=0.5, f0=72, f1=36):
+        n = secs(length)
+        x = sine(np.linspace(f0, f1, n), length) * adsr(n, 0.002, 0.12, 0.5, 0.3)
+        return stereo(lowpass(x, 160), 0)
+
+    def hit(kb, size="mid"):
+        g = {"small": 0.5, "mid": 0.75, "big": 1.0}[size]
+        put(sub(0.7 if size == "big" else 0.45), kb, 0.9 * g)
+        put(K("drum_hit" if size == "big" else "bass_hit", 1.2), kb, 0.5 * g)
+        if size != "small":
+            put(K("swoosh", 0.6), kb, 0.15 * g, st=-3)
+
+    def click(name, kb, gain, st=0.0):
+        put(K(name), kb, gain * (0.85 + 0.3 * rnd.random()), st=st + rnd.uniform(-1, 1))
+
+    # el punto: late solo, en silencio
+    for kb in range(4):
+        put(sub(0.35, 60, 40), kb, 0.45 + 0.1 * kb)
+        click("click_tick", kb, 0.25, st=-3)
+    put(K("riser_short"), 4, 0.45, off=-0.86)
+    # cuenta regresiva
+    for kb in (4, 5, 6):
+        hit(kb, "big" if kb == 4 else "mid")
+    hit(7, "small")
+    for i in range(5):
+        click("click", 7 + i * 0.05, 0.25)
+    # palabras
+    for i, kb in enumerate(range(8, 15)):
+        hit(kb, "mid" if kb != 14 else "big")
+        click(["click_select", "click_option", "click_ui"][i % 3], kb + 0.1, 0.25)
+    # grilla
+    hit(16, "big")
+    for kb in (17, 18, 19):
+        click("click_panel", kb, 0.35)
+        put(sub(0.25, 64, 48), kb, 0.35)
+    # partículas
+    hit(20, "mid")
+    put(K("whoosh_deep", 1.4), 20.5, 0.4)
+    put(K("riser_short"), 24, 0.4, off=-0.86)
+    hit(24, "big")
+    put(K("confirm"), 26, 0.3)
+    # profundidad
+    hit(28, "big")
+    for kb in (29, 30, 31):
+        click("pop", kb, 0.3, st=-5)
+    # tablero
+    hit(32, "mid")
+    click("click_panel", 33, 0.45)
+    for i in range(6):
+        click("click_tick", 32.5 + i * 0.5, 0.18, st=-2 + i * 0.4)
+    put(K("confirm"), 35, 0.3)
+    # arte óptico y redoble
+    hit(36, "big")
+    hit(37, "mid")
+    for j, kb in enumerate([38, 38.5, 39, 39.25, 39.5, 39.75]):
+        put(sub(0.28, 70, 50), kb, 0.4 + 0.1 * j)
+        click("click", kb, 0.22 + 0.04 * j, st=-3 + j * 0.8)
+    # logo
+    put(K("riser"), 40, 0.45, off=-1.8)
+    put(sub(1.3, 80, 30), 40, 1.0)
+    put(K("logo_hit"), 40, 0.9)
+    for i in range(5):
+        click("click", 40 + i * 2 / 9.86, 0.2)
+    click("click_ui", 41.5, 0.28)
+    click("click", 42.5, 0.28)
+    return m, c.bus, dur, 0.5
+
+
+BUILDERS = {"v1": v1, "v2": v2, "v3": v3, "v4": v4, "v5": v5, "v6": v6, "v7": v7, "v8": v8, "v9": v9, "v10": v10, "v11": v11, "v12": v12}
 
 
 BED_LUFS = -17.0
@@ -748,7 +834,7 @@ def build(name: str) -> dict:
     music = music * db(BED_LUFS - loud) * (music_gain / 0.5) if np.isfinite(loud) else music * 0
     cfg = load_tracks().get(name)
     if cfg:
-        enter = f2s(consts(*ENTER[name][:2])[ENTER[name][2]]) if name in ENTER else 0.0
+        enter = cfg["enter_s"] if "enter_s" in cfg else (f2s(consts(*ENTER[name][:2])[ENTER[name][2]]) if name in ENTER else 0.0)
         bed = track_bed(cfg, dur, enter)
         live = bed[:, secs(enter):]
         bed *= db(TRACK_LUFS + cfg.get("gain_db", 0.0) - pyln.Meter(SR).integrated_loudness(live.T))
